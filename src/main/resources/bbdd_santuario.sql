@@ -1,3 +1,8 @@
+
+set search_path to bbdd_santuario;
+create schema if not exists bbdd_santuario;
+-- bbdd se llamará postgres
+
 -- Tabla: Usuarios
 CREATE TABLE Usuarios (
 	id SERIAL PRIMARY KEY,
