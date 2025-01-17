@@ -1,3 +1,8 @@
+
+
+create schema if not exists bbdd_santuario;
+set search_path to bbdd_santuario;
+
 -- Tabla: Usuarios
 CREATE TABLE Usuarios (
 	id SERIAL PRIMARY KEY,
@@ -16,8 +21,8 @@ CREATE TABLE Cualidades (
 	foto VARCHAR(255), -- URL o ruta a la foto
 	genero CHAR(1) CHECK (genero IN ('M', 'F')) NOT NULL,
 	edad VARCHAR(20) CHECK (edad IN ('cachorro', 'adulto', 'senior')) NOT NULL,
-	raza VARCHAR(50) NOT NULL CHECK (raza IN ( 
-'Airedale Terrier', 'Akita', 'Akita Americano', 'American Bully', 'American Pit Bull Terrier', 'American Staffordshire Terrier', 'Azawakh', 'Barbet', 'Basenji', 'Basset Azul de Gascuña', 'Basset Hound', 'Beagle', 'Beauceron', 'Bedlington Terrier', 'Bichón Frisé', 'Bichón Habanero', 'Bichón Maltés', 'Billy', 'Bloodhound', 'Bóxer', 'Boyero Appenzeller', 'Boyero Australiano', 'Boyero de Berna', 'Boyero de Entlebuch', 'Braco Alemán de Pelo Corto', 'Braco Alemán de Pelo Duro', 'Braco de Auvernia', 'Braco de Saint-Germain', 'Braco Francés', 'Braco Italiano', 'Bull Terrier', 'Bull Terrier Miniatura', 'Bulldog Americano', 'Bulldog Francés', 'Bulldog Inglés', 'Bullmastiff', 'Cairn Terrier', 'Cane Corso', 'Caniche', 'Carlino (Pug)', 'Cavalier King Charles Spaniel', 'Chesapeake Bay Retriever', 'Chihuahua', 'Chin Japonés', 'Chow Chow', 'Cirneco del Etna', 'Clumber Spaniel', 'Cocker Spaniel Americano', 'Cocker Spaniel Inglés', 'Collie', 'Coonhound Negro y Fuego', 'Coonhound Redbone', 'Corgi Galés de Cardigan', 'Corgi Galés de Pembroke', 'Coton de Tuléar', 'Dachshund (Teckel)', 'Dálmata', 'Dandie Dinmont Terrier', 'Dingo Australiano', 'Dogo Alemán (Gran Danés)', 'Dogo Argentino', 'Dogo de Burdeos', 'Dóberman', 'Elkhound Noruego', 'Eurasier', 'Fila Brasileño', 'Fox Terrier de Pelo Liso', 'Fox Terrier de Pelo Duro', 'Foxhound Americano', 'Foxhound Inglés', 'Galgo Afgano', 'Galgo Español', 'Galgo Italiano', 'Golden Retriever', 'Gordon Setter', 'Gran Pirineo', 'Greyhound (Galgo Inglés)', 'Grifón Azul de Gascuña', 'Grifón de Bruselas', 'Grifón de Pelo Duro', 'Husky Siberiano', 'Jack Russell Terrier', 'Keeshond', 'Komondor', 'Kuvasz', 'Labrador Retriever', 'Lagotto Romagnolo', 'Lhasa Apso', 'Lebrel Escocés (Deerhound)', 'Lebrel Irlandés (Irish Wolfhound)', 'Leonberger', 'Lowchen', 'Malamute de Alaska', 'Maltés', 'Mastín Español', 'Mastín Napolitano', 'Mastín del Pirineo', 'Mastín Tibetano', 'Norfolk Terrier', 'Norwich Terrier', 'Otterhound', 'Papillón', 'Pastor Alemán', 'Pastor Australiano', 'Pastor Belga Malinois', 'Pastor Belga Tervuren', 'Pastor Blanco Suizo', 'Pastor de Asia Central', 'Pastor de Beauce', 'Pastor de los Pirineos', 'Pastor Ganadero Australiano', 'Pastor Holandés', 'Pequeño Brabanzón', 'Perdiguero de Burgos', 'Perdiguero Portugués', 'Perro de Agua Americano', 'Perro de Agua Español', 'Perro de Agua Portugués', 'Perro de Canaan', 'Perro de Montaña de los Pirineos', 'Perro Esquimal Americano', 'Perro Lobo Checoslovaco', 'Perro Lobo de Saarloos', 'Pinscher Alemán', 'Pinscher Miniatura', 'Pitbull Terrier', 'Podenco Andaluz', 'Podenco Canario', 'Podenco Ibicenco', 'Pomerania', 'Presa Canario', 'Pudelpointer', 'Puli', 'Retriever de Pelo Liso', 'Retriever de Pelo Rizado', 'Ridgeback de Rodesia', 'Rottweiler', 'Sabueso Español', 'Sabueso Italiano', 'Samoyedo', 'San Bernardo', 'Schipperke', 'Schnauzer Gigante', 'Schnauzer Mediano', 'Schnauzer Miniatura', 'Setter Gordon', 'Setter Inglés', 'Setter Irlandés', 'Shar Pei', 'Shiba Inu', 'Shih Tzu', 'Skye Terrier', 'Spaniel Azul Picardo', 'Spaniel Bretón', 'Spaniel de Campo', 'Spaniel de Sussex', 'Spaniel Francés', 'Spaniel Tibetano', 'Spinone Italiano', 'Springer Spaniel Galés', 'Springer Spaniel Inglés', 'Staffordshire Bull Terrier', 'Terranova', 'Terrier Australiano', 'Terrier Escocés', 'Terrier Irlandés', 'Terrier Jack Russell', 'Terrier Tibetano', 'Tosa Inu', 'Vizsla (Braco Húngaro)', 'Volpino Italiano', 'Weimaraner', 'West Highland White Terrier', 'Whippet', 'Yorkshire Terrier' 
+	raza VARCHAR(50) NOT NULL CHECK (raza IN (
+'Airedale Terrier', 'Akita', 'Akita Americano', 'American Bully', 'American Pit Bull Terrier', 'American Staffordshire Terrier', 'Azawakh', 'Barbet', 'Basenji', 'Basset Azul de Gascuña', 'Basset Hound', 'Beagle', 'Beauceron', 'Bedlington Terrier', 'Bichón Frisé', 'Bichón Habanero', 'Bichón Maltés', 'Billy', 'Bloodhound', 'Bóxer', 'Boyero Appenzeller', 'Boyero Australiano', 'Boyero de Berna', 'Boyero de Entlebuch', 'Braco Alemán de Pelo Corto', 'Braco Alemán de Pelo Duro', 'Braco de Auvernia', 'Braco de Saint-Germain', 'Braco Francés', 'Braco Italiano', 'Bull Terrier', 'Bull Terrier Miniatura', 'Bulldog Americano', 'Bulldog Francés', 'Bulldog Inglés', 'Bullmastiff', 'Cairn Terrier', 'Cane Corso', 'Caniche', 'Carlino (Pug)', 'Cavalier King Charles Spaniel', 'Chesapeake Bay Retriever', 'Chihuahua', 'Chin Japonés', 'Chow Chow', 'Cirneco del Etna', 'Clumber Spaniel', 'Cocker Spaniel Americano', 'Cocker Spaniel Inglés', 'Collie', 'Coonhound Negro y Fuego', 'Coonhound Redbone', 'Corgi Galés de Cardigan', 'Corgi Galés de Pembroke', 'Coton de Tuléar', 'Dachshund (Teckel)', 'Dálmata', 'Dandie Dinmont Terrier', 'Dingo Australiano', 'Dogo Alemán (Gran Danés)', 'Dogo Argentino', 'Dogo de Burdeos', 'Dóberman', 'Elkhound Noruego', 'Eurasier', 'Fila Brasileño', 'Fox Terrier de Pelo Liso', 'Fox Terrier de Pelo Duro', 'Foxhound Americano', 'Foxhound Inglés', 'Galgo Afgano', 'Galgo Español', 'Galgo Italiano', 'Golden Retriever', 'Gordon Setter', 'Gran Pirineo', 'Greyhound (Galgo Inglés)', 'Grifón Azul de Gascuña', 'Grifón de Bruselas', 'Grifón de Pelo Duro', 'Husky Siberiano', 'Jack Russell Terrier', 'Keeshond', 'Komondor', 'Kuvasz', 'Labrador Retriever', 'Lagotto Romagnolo', 'Lhasa Apso', 'Lebrel Escocés (Deerhound)', 'Lebrel Irlandés (Irish Wolfhound)', 'Leonberger', 'Lowchen', 'Malamute de Alaska', 'Maltés', 'Mastín Español', 'Mastín Napolitano', 'Mastín del Pirineo', 'Mastín Tibetano', 'Norfolk Terrier', 'Norwich Terrier', 'Otterhound', 'Papillón', 'Pastor Alemán', 'Pastor Australiano', 'Pastor Belga Malinois', 'Pastor Belga Tervuren', 'Pastor Blanco Suizo', 'Pastor de Asia Central', 'Pastor de Beauce', 'Pastor de los Pirineos', 'Pastor Ganadero Australiano', 'Pastor Holandés', 'Pequeño Brabanzón', 'Perdiguero de Burgos', 'Perdiguero Portugués', 'Perro de Agua Americano', 'Perro de Agua Español', 'Perro de Agua Portugués', 'Perro de Canaan', 'Perro de Montaña de los Pirineos', 'Perro Esquimal Americano', 'Perro Lobo Checoslovaco', 'Perro Lobo de Saarloos', 'Pinscher Alemán', 'Pinscher Miniatura', 'Pitbull Terrier', 'Podenco Andaluz', 'Podenco Canario', 'Podenco Ibicenco', 'Pomerania', 'Presa Canario', 'Pudelpointer', 'Puli', 'Retriever de Pelo Liso', 'Retriever de Pelo Rizado', 'Ridgeback de Rodesia', 'Rottweiler', 'Sabueso Español', 'Sabueso Italiano', 'Samoyedo', 'San Bernardo', 'Schipperke', 'Schnauzer Gigante', 'Schnauzer Mediano', 'Schnauzer Miniatura', 'Setter Gordon', 'Setter Inglés', 'Setter Irlandés', 'Shar Pei', 'Shiba Inu', 'Shih Tzu', 'Skye Terrier', 'Spaniel Azul Picardo', 'Spaniel Bretón', 'Spaniel de Campo', 'Spaniel de Sussex', 'Spaniel Francés', 'Spaniel Tibetano', 'Spinone Italiano', 'Springer Spaniel Galés', 'Springer Spaniel Inglés', 'Staffordshire Bull Terrier', 'Terranova', 'Terrier Australiano', 'Terrier Escocés', 'Terrier Irlandés', 'Terrier Jack Russell', 'Terrier Tibetano', 'Tosa Inu', 'Vizsla (Braco Húngaro)', 'Volpino Italiano', 'Weimaraner', 'West Highland White Terrier', 'Whippet', 'Yorkshire Terrier'
 )),
 
 
@@ -30,8 +35,8 @@ CREATE TABLE Cualidades (
 	temperamento INT CHECK (temperamento >= 1 AND temperamento <= 10),
 	experiencia INT CHECK (experiencia >= 1 AND experiencia <= 10),
 	territorialidad INT CHECK (territorialidad >= 1 AND territorialidad <= 10),
-	
-	
+
+
 CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES Usuarios(id) ON DELETE CASCADE
 );
 
@@ -43,8 +48,8 @@ CREATE TABLE Follows(
 id_seguidor INT NOT NULL,
 id_seguido INT NOT NULL,
 
-PRIMARY KEY (id_seguidor, id_seguido), 
-FOREIGN KEY (id_seguidor) REFERENCES Usuarios(id) ON DELETE CASCADE, FOREIGN KEY (id_seguido) REFERENCES Usuarios(id) ON DELETE CASCADE 
+PRIMARY KEY (id_seguidor, id_seguido),
+FOREIGN KEY (id_seguidor) REFERENCES Usuarios(id) ON DELETE CASCADE, FOREIGN KEY (id_seguido) REFERENCES Usuarios(id) ON DELETE CASCADE
 );
 
 
@@ -68,7 +73,7 @@ CREATE TABLE Miembros_Chat (
 	id_chat INT NOT NULL,
 	id_usuario INT NOT NULL,
 	PRIMARY KEY (id_chat, id_usuario),
-	
+
 	CONSTRAINT fk_chat FOREIGN KEY (id_chat) REFERENCES Chats(id) ON DELETE CASCADE,
 	CONSTRAINT fk_usuario_chat FOREIGN KEY (id_usuario) REFERENCES Usuarios(id) ON DELETE CASCADE
 );
@@ -84,7 +89,7 @@ CREATE TABLE Mensajes (
 	fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
 CONSTRAINT fk_chat_mensaje FOREIGN KEY (id_chat) REFERENCES Chats(id) ON DELETE CASCADE,
-CONSTRAINT fk_emisor FOREIGN KEY (id_emisor) REFERENCES Usuarios(id) ON DELETE CASCADE 
+CONSTRAINT fk_emisor FOREIGN KEY (id_emisor) REFERENCES Usuarios(id) ON DELETE CASCADE
 );
 
 
@@ -107,28 +112,28 @@ CREATE TABLE Publicaciones (
 
 
 
--- Tabla: Likes 
+-- Tabla: Likes
 CREATE TABLE Likes (
 id_publicacion INT NOT NULL,
-id_usuario INT NOT NULL, 
+id_usuario INT NOT NULL,
 
-PRIMARY KEY (id_publicacion, id_usuario), 
-CONSTRAINT fk_publicacion FOREIGN KEY (id_publicacion) REFERENCES Publicaciones(id) ON DELETE CASCADE, 
+PRIMARY KEY (id_publicacion, id_usuario),
+CONSTRAINT fk_publicacion FOREIGN KEY (id_publicacion) REFERENCES Publicaciones(id) ON DELETE CASCADE,
 CONSTRAINT fk_usuario_like FOREIGN KEY (id_usuario) REFERENCES Usuarios(id) ON DELETE CASCADE
-); 
+);
 
 
 
 
--- Tabla: Comentarios 
+-- Tabla: Comentarios
 CREATE TABLE Comentarios (
-id SERIAL PRIMARY KEY, 
+id SERIAL PRIMARY KEY,
 id_publicacion INT NOT NULL,
-id_usuario INT NOT NULL, 
-texto TEXT NOT NULL, 
+id_usuario INT NOT NULL,
+texto TEXT NOT NULL,
 
-CONSTRAINT fk_publicacion_comentario FOREIGN KEY (id_publicacion) REFERENCES Publicaciones(id) ON DELETE CASCADE, 
-CONSTRAINT fk_usuario_comentario FOREIGN KEY (id_usuario) REFERENCES Usuarios(id) ON DELETE CASCADE 
+CONSTRAINT fk_publicacion_comentario FOREIGN KEY (id_publicacion) REFERENCES Publicaciones(id) ON DELETE CASCADE,
+CONSTRAINT fk_usuario_comentario FOREIGN KEY (id_usuario) REFERENCES Usuarios(id) ON DELETE CASCADE
 );
 
 
