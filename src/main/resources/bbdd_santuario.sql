@@ -1,3 +1,7 @@
+create schema if not exists bbdd_santuario;
+set search_path to bbdd_santuario;
+
+
 -- Tabla: Usuarios
 CREATE TABLE Usuarios (
 	id SERIAL PRIMARY KEY,
