@@ -1,4 +1,7 @@
 package org.example.diadp1backend.repositorios;
 
-public interface PublicacionRepository {
+import org.example.diadp1backend.modelos.Publicacion;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PublicacionRepository extends JpaRepository<Publicacion, Integer> {
 }

@@ -32,4 +32,7 @@ public class Comentario {
   @Column(name = "texto", nullable = false)
   private String texto;
 
+  @Column(name = "fecha_creacion", nullable = false)
+  private java.sql.Timestamp fecha;
+
 }

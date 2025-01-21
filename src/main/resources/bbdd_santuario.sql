@@ -137,6 +137,13 @@ CONSTRAINT fk_usuario_comentario FOREIGN KEY (id_usuario) REFERENCES Usuarios(id
 );
 
 
+--------------------------------- Añadir fecha_creacion a Comentarios ---------------------
+
+ALTER TABLE Comentarios
+  ADD COLUMN fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+
+
 
 
 
