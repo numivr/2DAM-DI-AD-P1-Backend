@@ -8,13 +8,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "mensajes", schema = "bbdd_santuario")
+@Table(name = "comentarios", schema = "bbdd_santuario")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Mensaje {
+public class Comentario {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,17 +22,17 @@ public class Mensaje {
   private Integer id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id_chat", nullable = false)
-  private Chat chat;
+  @JoinColumn(name = "id_publicacion", nullable = false)
+  private Publicacion publicacion;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id_emisor", nullable = false)
-  private Usuario emisor;
+  @JoinColumn(name = "id_usuario", nullable = false)
+  private Usuario usuario;
 
-  @Column(name = "contenido", nullable = false)
-  private String contenido;
+  @Column(name = "texto", nullable = false)
+  private String texto;
 
-  @Column(name = "fecha", nullable = false)
+  @Column(name = "fecha_creacion", nullable = false)
   private java.sql.Timestamp fecha;
 
 }
