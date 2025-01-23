@@ -30,7 +30,7 @@ public class Usuario {
   @Column(name = "contraseña", nullable = false)
   private String contraseña;
 
-  @Column(name = "es_admin", nullable = false)
+  @Column(name = "es_admin", nullable = true)
   private Boolean esAdmin;
 
   @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

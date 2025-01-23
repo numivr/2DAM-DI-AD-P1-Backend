@@ -1,12 +1,15 @@
 package org.example.diadp1backend.servicios;
 
+import org.example.diadp1backend.DTOs.ChatDTO;
 import org.example.diadp1backend.DTOs.ChatWithProfilesDTO;
+import org.example.diadp1backend.modelos.Chat;
 import org.example.diadp1backend.repositorios.ChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,23 +21,27 @@ public class ChatService {
         this.chatRepository = chatRepository;
     }
 
+
+
     public List<ChatWithProfilesDTO> getActiveChatsWithUserProfiles(Integer userId) {
-        List<Object[]> results = chatRepository.findActiveChatsWithUserProfiles(userId);
-        List<ChatWithProfilesDTO> chatsActivosDTOS = new ArrayList<>();
-
-        for(Object[] r : results){
+        List<Integer> chatIds = chatRepository.findChatsByUsuarioId(userId);
+        List<Chat> chats = new ArrayList<>();
+        List<ChatWithProfilesDTO> listaDTOs = new ArrayList<>();
+        for (Integer chatId : chatIds) {
+            Optional<Chat> chat = chatRepository.findById(chatId);
+            chat.ifPresent(chats::add);
+        }
+        for(Chat c : chats){
             ChatWithProfilesDTO dto = new ChatWithProfilesDTO();
-            dto.setIdChat((Integer) r[0]);
-            dto.setNombreChat((String) r[1]);
-            dto.setTipoChat((String) r[2]);
-            dto.setIdUsuario((Integer) r[3]);
-            dto.setNombreUsuario((String) r[4]);
-            dto.setFotoPerfil((String) r[5]);
+            dto.setIdChat(c.getId());
+            dto.setNombreChat(c.getNombre());
+            dto.setTipoChat(c.getTipo());
 
-            chatsActivosDTOS.add(dto);
+            listaDTOs.add(dto);
         }
 
-        return chatsActivosDTOS;
+        return listaDTOs;
     }
+
 
 }
