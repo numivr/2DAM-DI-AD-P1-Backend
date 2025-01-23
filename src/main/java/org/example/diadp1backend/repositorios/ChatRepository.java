@@ -1,10 +1,8 @@
 package org.example.diadp1backend.repositorios;
 
-import org.example.diadp1backend.DTOs.ChatWithProfilesDTO;
 import org.example.diadp1backend.modelos.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
