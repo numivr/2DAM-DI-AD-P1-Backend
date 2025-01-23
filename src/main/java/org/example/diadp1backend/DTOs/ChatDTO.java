@@ -10,8 +10,19 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ChatDTO {
-    private String nombrePerfil;
-    private String fotoPerfil;
-    private String ultimoMensaje;
+    private Integer id;
+    private String nombre;
+    private String tipo;
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }
