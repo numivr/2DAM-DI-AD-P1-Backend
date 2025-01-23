@@ -11,8 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PublicacionService {
 
-  @Autowired
-  private PublicacionService publicacionService;
 
 
 

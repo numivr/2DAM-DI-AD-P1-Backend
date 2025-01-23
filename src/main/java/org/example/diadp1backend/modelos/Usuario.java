@@ -2,9 +2,11 @@ package org.example.diadp1backend.modelos;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -14,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Usuario {
+public class Usuario implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,6 +64,47 @@ public class Usuario {
     inverseJoinColumns = @JoinColumn(name = "id_chat")
   )
   private Set<Chat> chats = new HashSet<>();
+
+  @Override //Esto lo cambiamos para que use nuestro campo rol(esadim)
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return Collections.singletonList(new SimpleGrantedAuthority(this.esAdmin.toString())); //Con esto hay que tener cuidado
+  }
+
+  @Override
+  public String getPassword() {
+    return "";
+  }
+
+  @Override
+  public String getUsername() {
+    return "";
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return UserDetails.super.isAccountNonExpired();
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return UserDetails.super.isAccountNonLocked();
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return UserDetails.super.isCredentialsNonExpired();
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return UserDetails.super.isEnabled();
+  }
+
+  // métodos y cosas de UserDetails
+
+
+
+
 }
 
 
