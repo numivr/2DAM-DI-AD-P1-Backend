@@ -19,7 +19,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> repository.findTopByUsername(username)
+        return username -> repository.findTopByNombre(username)
         .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
       }
 

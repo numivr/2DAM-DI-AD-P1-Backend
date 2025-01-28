@@ -7,8 +7,10 @@ import io.jsonwebtoken.security.Keys;
 import org.example.diadp1backend.modelos.Usuario;
 
 import java.security.Key;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class JWTService {
 
@@ -27,7 +29,7 @@ public class JWTService {
               .builder()
               .claim("TokenDataDTO", tokenDataDTO)
               .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-              .comparct();
+              .compact();
   }
 
   //Método que a  partir de un token te el usuario
@@ -36,11 +38,24 @@ public class JWTService {
 
   private Claims extractDatosToken(String token){
     return Jwts
-              .parser()
+              .parserBuilder()
               .setSigningKey(getSignInKey())
               .build()
               .parseClaimsJws(token)
               .getBody();
+  }
+
+  public String extractUsername(String token){
+    return Jwts.parserBuilder()
+      .setSigningKey(getSignInKey())
+      .build()
+      .parseClaimsJws(token)
+      .getBody().getSubject();
+  }
+
+  public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
+    final Claims claims = extractDatosToken(token);
+    return claimsResolver.apply(claims);
   }
 
   //Este metodo solo saca la información que va dentro del json, es decir los datos del DTO
@@ -57,13 +72,29 @@ public class JWTService {
   }
 
 
+  public boolean isTokenValid(String token, Usuario usuario){
+    final String username = extractUsername(token);
+    return (username.equals(usuario.getUsername())) && !isTokenExpired(token);
 
-  //Método que coge la clave secreta y ver si el token es válido
+  }
 
 
-  //Método que sabe la clave de encriptación
-private Key getSignInKey(){
-  return Keys.hmacShaKeyFor("claveSecreta".getBytes());
+
+  //Metodo que coge la clave secreta y ver si el token es válido
+
+
+    //Metodo que sabe la clave de encriptación
+  private Key getSignInKey() {
+    return Keys.hmacShaKeyFor("claveSecreta".getBytes());
+   }
+
+  private boolean isTokenExpired(String token){
+    return extractExpiration(token).before(new Date());
+  }
+
+  private Date extractExpiration(String token){
+    return extractClaim(token, Claims::getExpiration);
+  }
 
 
 

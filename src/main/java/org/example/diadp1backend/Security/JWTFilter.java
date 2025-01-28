@@ -7,18 +7,20 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.diadp1backend.modelos.Usuario;
 import org.example.diadp1backend.servicios.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 public class JWTFilter extends OncePerRequestFilter {
 
-   @Autowired
-    private  JWTService jwtService;
+    //Aquí debería ir un autowired de JWTService y UsuarioService
+    private JWTService jwtService;
 
-   @Autowired
-   private UsuarioService usuarioService;
+
+    private UsuarioService usuarioService;
 
 
 
@@ -28,7 +30,11 @@ public class JWTFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
                                     throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+      final String authHeader = request.getHeader("Authorization");
+      final String jwt;
+      final String username;
+
+
 
        //Si viene por la url "auth" lo dejamos pasar
       if (request.getServletPath().contains("/auth")){
@@ -41,12 +47,21 @@ public class JWTFilter extends OncePerRequestFilter {
         return;
       }
 
-      String token = authHeader.substring(7);
-      TokenDataDTO tokenDataDTO = jwtService.extractTokenData(token);
+      jwt = authHeader.substring(7);
+      username = jwtService.extractUsername(jwt);
 
-      if(tokenDataDTO != null && SecurityContextHolder.getContext().getAuthentication() == null){
-        Usuario usuario = usuarioService.loadUserByUsername(tokenDataDTO.getUsername());
-      })
+      if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        Usuario usuario = (Usuario) usuarioService.loadUserByUsername(username); //Aquí hemos hecho un cast pero parece innecesario
+
+          if(jwtService.isTokenValid(jwt, usuario)){
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+              usuario.getUsername(),
+              usuario.getPassword(),
+              usuario.getAuthorities());
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+          }
+      }
 
         filterChain.doFilter(request, response);
     }
