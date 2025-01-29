@@ -9,6 +9,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "chats", schema = "bbdd_santuario")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -33,41 +35,5 @@ public class Chat {
 
   public Integer getId() {
     return id;
-  }
-
-  public Set<Mensaje> getMensajes() {
-    return mensajes;
-  }
-
-  public Set<Usuario> getMiembros() {
-    return miembros;
-  }
-
-  public String getNombre() {
-    return nombre;
-  }
-
-  public String getTipo() {
-    return tipo;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public void setMensajes(Set<Mensaje> mensajes) {
-    this.mensajes = mensajes;
-  }
-
-  public void setMiembros(Set<Usuario> miembros) {
-    this.miembros = miembros;
-  }
-
-  public void setNombre(String nombre) {
-    this.nombre = nombre;
-  }
-
-  public void setTipo(String tipo) {
-    this.tipo = tipo;
   }
 }

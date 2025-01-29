@@ -3,8 +3,8 @@ package org.example.diadp1backend.modelos;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.*;
 
 
 @Entity
@@ -30,7 +30,7 @@ public class Usuario {
   @Column(name = "contraseña", nullable = false)
   private String contraseña;
 
-  @Column(name = "es_admin", nullable = true)
+  @Column(name = "esadmin", nullable = false)
   private Boolean esAdmin;
 
   @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -63,5 +63,3 @@ public class Usuario {
   )
   private Set<Chat> chats = new HashSet<>();
 }
-
-

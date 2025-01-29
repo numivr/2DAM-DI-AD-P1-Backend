@@ -33,9 +33,12 @@ public class ChatService {
         for(Chat c : chats){
             ChatDTO dto = new ChatDTO();
             dto.setId(c.getId());
-            dto.setNombre(c.getNombre());
+            if (c.getNombre() == null) {
+                dto.setNombre(chatRepository.findNombreUsuarioByChatId(c.getId(), userId));
+            }else {
+                dto.setNombre(c.getNombre());
+            }
             dto.setTipo(c.getTipo());
-
             listaDTOs.add(dto);
         }
 
