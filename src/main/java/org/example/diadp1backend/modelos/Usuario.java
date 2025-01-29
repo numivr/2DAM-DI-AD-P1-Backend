@@ -2,11 +2,9 @@ package org.example.diadp1backend.modelos;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -16,7 +14,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Usuario implements UserDetails {
+public class Usuario {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +30,7 @@ public class Usuario implements UserDetails {
   @Column(name = "contraseña", nullable = false)
   private String contraseña;
 
-  @Column(name = "es_admin", nullable = false)
+  @Column(name = "es_admin", nullable = true)
   private Boolean esAdmin;
 
   @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -64,47 +62,6 @@ public class Usuario implements UserDetails {
     inverseJoinColumns = @JoinColumn(name = "id_chat")
   )
   private Set<Chat> chats = new HashSet<>();
-
-  @Override //Esto lo cambiamos para que use nuestro campo rol(esadim)
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Collections.singletonList(new SimpleGrantedAuthority(this.esAdmin.toString())); //Con esto hay que tener cuidado
-  }
-
-  @Override
-  public String getPassword() {
-    return this.contraseña;
-  }
-
-  @Override
-  public String getUsername() {
-    return this.nombre;
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return UserDetails.super.isAccountNonExpired();
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return UserDetails.super.isAccountNonLocked();
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return UserDetails.super.isCredentialsNonExpired();
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return UserDetails.super.isEnabled();
-  }
-
-  // métodos y cosas de UserDetails
-
-
-
-
 }
 
 
