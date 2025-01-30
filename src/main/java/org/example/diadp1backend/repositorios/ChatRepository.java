@@ -2,6 +2,7 @@ package org.example.diadp1backend.repositorios;
 
 import org.example.diadp1backend.DTOs.ChatWithProfilesDTO;
 import org.example.diadp1backend.modelos.Chat;
+import org.example.diadp1backend.modelos.Mensaje;
 import org.example.diadp1backend.modelos.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +19,12 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
 
     @Query(value = "Select u.nombre from bbdd_santuario.usuarios u join bbdd_santuario.miembros_chat m on (m.id_usuario = u.id) where (m.id_chat = :idChat and u.id != :idUsuario)", nativeQuery = true)
     String findNombreUsuarioByChatId(Integer idChat, Integer idUsuario);
+
+    @Query(value = "select m from Mensaje m " +
+            "join Chat c on (m.chat.id = :idChat) " +
+            "order by m.fecha desc limit 1" )
+    Mensaje getUltimoMensaje(Integer idChat);
+
 
     List<Chat> findChatsById(Integer id);
 }
