@@ -1,5 +1,8 @@
 package org.example.diadp1backend.DTOs;
 
+import lombok.Data;
+
+@Data
 public class CualidadDTO {
 
   // Solo se usa al mostrar el perfil de cada usuario y al hacer el registro de un usuario

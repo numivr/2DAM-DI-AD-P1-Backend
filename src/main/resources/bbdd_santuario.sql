@@ -9,7 +9,7 @@ CREATE TABLE Usuarios (
 	email VARCHAR(100) NOT NULL UNIQUE,
 	nombre VARCHAR(50) NOT NULL UNIQUE,
 	contraseña VARCHAR(255) NOT null,
-	esAdmin BOOLEAN DEFAULT FALSE NOT NULL
+	es_admin BOOLEAN DEFAULT FALSE NOT NULL
  );
 
 
@@ -157,7 +157,7 @@ ALTER TABLE Comentarios
 
 
 -- Insertar usuarios
-INSERT INTO Usuarios (email, nombre, contraseña, esAdmin) VALUES
+INSERT INTO Usuarios (email, nombre, contraseña, es_admin) VALUES
 ('admin@example.com', 'AdminUser', 'hashed_password_1', TRUE),
 ('user1@example.com', 'JohnDoe', 'hashed_password_2', FALSE),
 ('user2@example.com', 'JaneSmith', 'hashed_password_3', FALSE),

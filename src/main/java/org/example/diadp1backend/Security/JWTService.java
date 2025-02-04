@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.example.diadp1backend.modelos.Usuario;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
@@ -12,8 +13,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Service
 public class JWTService {
 
+  private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
   //Método que a partir de un usuario genere un token
   public String generateToken(Usuario usuario){
@@ -85,7 +88,7 @@ public class JWTService {
 
     //Metodo que sabe la clave de encriptación
   private Key getSignInKey() {
-    return Keys.hmacShaKeyFor("claveSecreta".getBytes());
+    return key;
    }
 
   private boolean isTokenExpired(String token){

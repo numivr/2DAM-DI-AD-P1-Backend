@@ -1,10 +1,13 @@
 package org.example.diadp1backend.DTOs;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class PublicacionDTO {
-  private Integer idPublicacion; //Esto se usará para listar los comentarios
-  private String usuarioCreador; //Esto solo se usa en el get de publicacion
+  private Integer id; //Esto se usará para listar los comentarios
+  private String creador; //Esto solo se usa en el get de publicacion
   private String texto;
   private String imagen;
   private Integer idCreador; //Esto solo se usa en el post de publicacion

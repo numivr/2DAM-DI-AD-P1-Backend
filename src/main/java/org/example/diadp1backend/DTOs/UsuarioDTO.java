@@ -1,7 +1,10 @@
 package org.example.diadp1backend.DTOs;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import lombok.Data;
 
+
+@Data
 public class UsuarioDTO {
   private Integer id; //no se si es necesario
   private String nombre;

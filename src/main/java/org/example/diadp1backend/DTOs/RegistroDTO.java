@@ -13,4 +13,5 @@ public class RegistroDTO {
   //No le pondremos ni el rol ni el id
   private String usuario;
   private String password;
+  private String email;
 }
