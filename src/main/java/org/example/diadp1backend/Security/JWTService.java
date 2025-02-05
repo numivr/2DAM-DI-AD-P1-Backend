@@ -63,16 +63,48 @@ public class JWTService {
 
   //Este metodo solo saca la información que va dentro del json, es decir los datos del DTO
 
-  public TokenDataDTO extractTokenData (String token){
+  public TokenDataDTO extractTokenData(String token) {
     Claims claims = extractDatosToken(token);
-    Map<String, Object> mapa = (LinkedHashMap<String,Object>) claims.get("tokenDataDTO");
+
+    System.out.println("Claims obtenidos: " + claims); // <- Ver qué contiene el token
+
+    if (claims == null) {
+      throw new RuntimeException("El token es inválido o no contiene claims");
+    }
+
+    Object tokenDataObj = claims.get("TokenDataDTO"); // <- Aquí cambia el nombre
+
+    if (tokenDataObj == null) {
+      throw new RuntimeException("El token no contiene TokenDataDTO");
+    }
+
+    if (!(tokenDataObj instanceof Map)) {
+      throw new RuntimeException("El TokenDataDTO no tiene el formato esperado");
+    }
+
+    @SuppressWarnings("unchecked")
+    Map<String, Object> mapa = (Map<String, Object>) tokenDataObj;
+
+    // Verificar si el mapa tiene las claves necesarias
+    if (!mapa.containsKey("username") || !mapa.containsKey("rol") ||
+      !mapa.containsKey("fecha_creacion") || !mapa.containsKey("fecha_expiracion")) {
+      throw new RuntimeException("El TokenDataDTO está incompleto");
+    }
+
     return TokenDataDTO.builder()
-            .username((String) mapa.get("username"))
-            .rol((String) mapa.get("rol"))
-            .fecha_creacion((Long) mapa.get("fecha_creacion"))
-            .fecha_expiracion((Long) mapa.get("fecha_expiracion"))
-            .build();
+      .username((String) mapa.getOrDefault("username", ""))
+      .rol((String) mapa.getOrDefault("rol", ""))
+      .fecha_creacion(mapa.get("fecha_creacion") instanceof Number
+        ? ((Number) mapa.get("fecha_creacion")).longValue()
+        : null)
+      .fecha_expiracion(mapa.get("fecha_expiracion") instanceof Number
+        ? ((Number) mapa.get("fecha_expiracion")).longValue()
+        : null)
+      .build();
   }
+
+
+
 
 
   public boolean isTokenValid(String token, Usuario usuario){

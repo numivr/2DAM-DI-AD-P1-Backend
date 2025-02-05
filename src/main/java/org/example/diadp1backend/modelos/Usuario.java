@@ -15,18 +15,21 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Usuario implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
+  @EqualsAndHashCode.Include // ✅ Solo el ID se usará para comparar usuarios
   private Integer id;
 
   @Column(name = "email", nullable = false, unique = true)
+  @EqualsAndHashCode.Include // ✅ Incluir email en equals() y hashCode()
   private String email;
 
   @Column(name = "nombre", nullable = false, unique = true)
+  @EqualsAndHashCode.Include // ✅ Incluir nombre en equals() y hashCode()
   private String nombre;
 
   @Column(name = "contraseña", nullable = false)
@@ -65,9 +68,9 @@ public class Usuario implements UserDetails {
   )
   private Set<Chat> chats = new HashSet<>();
 
-  @Override //Esto lo cambiamos para que use nuestro campo rol(esadim)
+  @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Collections.singletonList(new SimpleGrantedAuthority(this.esAdmin.toString())); //Con esto hay que tener cuidado
+    return Collections.singletonList(new SimpleGrantedAuthority(this.esAdmin.toString()));
   }
 
   @Override
@@ -82,29 +85,24 @@ public class Usuario implements UserDetails {
 
   @Override
   public boolean isAccountNonExpired() {
-    return UserDetails.super.isAccountNonExpired();
+    return true;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return UserDetails.super.isAccountNonLocked();
+    return true;
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    return UserDetails.super.isCredentialsNonExpired();
+    return true;
   }
 
   @Override
   public boolean isEnabled() {
-    return UserDetails.super.isEnabled();
+    return true;
   }
-
-  // métodos y cosas de UserDetails
-
-
-
-
 }
+
 
 

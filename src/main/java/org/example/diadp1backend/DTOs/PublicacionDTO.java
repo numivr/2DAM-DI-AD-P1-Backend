@@ -1,15 +1,18 @@
 package org.example.diadp1backend.DTOs;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PublicacionDTO {
-  private Integer id; //Esto se usará para listar los comentarios
-  private String creador; //Esto solo se usa en el get de publicacion
-  private String texto;
-  private String imagen;
-  private Integer idCreador; //Esto solo se usa en el post de publicacion
-  private Integer numLikes; //Esto se usara para saber cuantos likes tiene una publicacion directamente al traernos sus datos
+  private String perfil; // Nombre del creador de la publicación
+  private String fotoPerfil; // Foto del perfil del creador
+  private String texto; // Texto de la publicación
+  private String fotoPublicacion; // Imagen asociada a la publicación
+  private String numComentarios; // Número de comentarios en la publicación
+  private int numLikes; // Número de 'Me gusta' en la publicación
+  private boolean liked; // Si el usuario actual ha dado 'Me gusta' o no
 }
