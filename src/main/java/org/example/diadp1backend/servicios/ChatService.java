@@ -1,15 +1,18 @@
+// src/main/java/org/example/diadp1backend/servicios/ChatService.java
 package org.example.diadp1backend.servicios;
 
 import org.example.diadp1backend.DTOs.ChatDTO;
 import org.example.diadp1backend.modelos.Chat;
+import org.example.diadp1backend.modelos.Mensaje;
 import org.example.diadp1backend.repositorios.ChatRepository;
+import org.example.diadp1backend.util.TimestampFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 public class ChatService {
@@ -20,12 +23,11 @@ public class ChatService {
         this.chatRepository = chatRepository;
     }
 
-
-
     public List<ChatDTO> getActiveChatsWithUserProfiles(Integer userId) {
         List<Integer> chatIds = chatRepository.findChatsByUsuarioId(userId);
         List<Chat> chats = new ArrayList<>();
         List<ChatDTO> listaDTOs = new ArrayList<>();
+        List<String> fotos = new ArrayList<>();
         for (Integer chatId : chatIds) {
             Optional<Chat> chat = chatRepository.findById(chatId);
             chat.ifPresent(chats::add);
@@ -34,14 +36,18 @@ public class ChatService {
             ChatDTO dto = new ChatDTO();
             dto.setId(c.getId());
 
+            Mensaje ultimoMensaje = chatRepository.getUltimoMensaje(c.getId());
             if (c.getNombre() == null) {
                 dto.setNombre(chatRepository.findNombreUsuarioByChatId(c.getId(), userId));
-            }else {
-                dto.setNombre(c.getNombre());
-            }
+                dto.setUltimoMensaje(ultimoMensaje.getContenido());
 
-            dto.setUltimoMensaje(chatRepository.getUltimoMensaje(c.getId()).getContenido());
-            dto.setFechaUltimoMensaje(chatRepository.getUltimoMensaje(c.getId()).getFecha());
+            } else {
+                dto.setNombre(c.getNombre());
+                dto.setUltimoMensaje(ultimoMensaje.getEmisor().getNombre() + ": " + ultimoMensaje.getContenido());
+            }
+            fotos = new ArrayList<>(chatRepository.findFotoByUsuarioId(c.getId(), userId));
+            dto.setFoto(fotos);
+            dto.setFechaUltimoMensaje(TimestampFormatter.formatTimestamp(chatRepository.getUltimoMensaje(c.getId()).getFecha()));
 
             dto.setTipo(c.getTipo());
             listaDTOs.add(dto);
@@ -49,6 +55,4 @@ public class ChatService {
 
         return listaDTOs;
     }
-
-
 }

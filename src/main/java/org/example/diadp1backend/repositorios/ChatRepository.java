@@ -20,6 +20,10 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
     @Query(value = "Select u.nombre from bbdd_santuario.usuarios u join bbdd_santuario.miembros_chat m on (m.id_usuario = u.id) where (m.id_chat = :idChat and u.id != :idUsuario)", nativeQuery = true)
     String findNombreUsuarioByChatId(Integer idChat, Integer idUsuario);
 
+    @Query(value = "SELECT c.foto FROM bbdd_santuario.Cualidades c join bbdd_santuario.usuarios u on (c.id_usuario = u.id) join bbdd_santuario.miembros_chat m on (u.id = m.id_usuario) WHERE m.id_chat = :idChat and u.id != :idUsuario limit 5", nativeQuery = true)
+    List<String> findFotoByUsuarioId(Integer idChat, Integer idUsuario);
+
+
     @Query(value = "select m from Mensaje m " +
             "join Chat c on (m.chat.id = :idChat) " +
             "order by m.fecha desc limit 1" )
