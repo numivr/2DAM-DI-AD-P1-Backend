@@ -35,4 +35,5 @@ public class Mensaje {
   @Column(name = "fecha", nullable = false)
   private java.sql.Timestamp fecha;
 
+
 }

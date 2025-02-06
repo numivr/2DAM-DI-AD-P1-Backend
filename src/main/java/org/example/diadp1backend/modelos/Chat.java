@@ -33,5 +33,7 @@ public class Chat {
   @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private Set<Mensaje> mensajes = new HashSet<>();
 
-
+  public Integer getId() {
+    return id;
+  }
 }
