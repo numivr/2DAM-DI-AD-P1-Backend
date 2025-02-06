@@ -13,6 +13,7 @@ import org.example.diadp1backend.repositorios.UsuarioRepository;
 import org.example.diadp1backend.util.TimestampFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -33,7 +34,7 @@ public class ChatService {
 
     this.jwtService = jwtService;
   }
-
+    @Transactional
     public List<ChatDTO> getActiveChatsWithUserProfiles() {
 
       HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();

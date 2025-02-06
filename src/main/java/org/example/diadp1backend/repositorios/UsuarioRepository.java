@@ -16,6 +16,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
   @Query(value = "SELECT u FROM Usuario u WHERE u.nombre = :nombre")
   Optional<Usuario> findTopByNombre(@Param("nombre") String nombre);
 
-  @Query(value = "select u.id from bbdd_santuario.usuarios u where u.nombre = :nombre LIMIT 1", nativeQuery = true)
+  @Query(value = "select u.id from Usuario u where u.nombre = :nombre")
   Integer findUsuarioIdByNombre(String nombre);
 }
