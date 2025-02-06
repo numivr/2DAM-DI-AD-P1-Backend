@@ -19,9 +19,9 @@ public class ChatController {
         this.service = service;
     }
 
-    @GetMapping("/conversaciones/{idUsuario}")
-    public ResponseEntity<List<ChatDTO>> getChatsWithProfiles(@PathVariable Integer idUsuario) {
-        return ResponseEntity.ok(service.getActiveChatsWithUserProfiles(idUsuario));
+    @GetMapping("/conversaciones")
+    public ResponseEntity<List<ChatDTO>> getChatsWithProfiles() {
+        return ResponseEntity.ok(service.getActiveChatsWithUserProfiles());
     }
 
 

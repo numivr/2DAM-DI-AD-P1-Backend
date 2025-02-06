@@ -218,7 +218,33 @@ INSERT INTO Comentarios (id_publicacion, id_usuario, texto) VALUES
 (2, 2, 'Hermoso día.'),
 (3, 3, 'Me encanta esa foto.');
 
+-- Si el usuario no está en un chat, agregarlo a un chat existente
+INSERT INTO Miembros_Chat (id_chat, id_usuario) VALUES
+                                                  (1, 7),
+                                                  (2, 7);
 
+-- Insertar 20 mensajes enviados por el usuario con id 7 en diferentes chats
+INSERT INTO Mensajes (id_chat, id_emisor, contenido) VALUES
+                                                       (1, 7, 'Hola a todos en este chat!'),
+                                                       (1, 7, '¿Cómo están hoy?'),
+                                                       (1, 7, 'Alguien ha visto las noticias?'),
+                                                       (1, 7, 'Voy a salir a correr, alguien quiere unirse?'),
+                                                       (1, 7, '¿Qué opinan del nuevo evento en la ciudad?'),
+                                                       (1, 7, 'Recibí una oferta de trabajo increíble.'),
+                                                       (1, 7, 'Voy a necesitar ayuda con mi proyecto.'),
+                                                       (2, 7, 'Hola equipo, tenemos una reunión mañana.'),
+                                                       (2, 7, '¿Quién puede presentar el informe?'),
+                                                       (2, 7, 'El código del backend necesita revisión.'),
+                                                       (2, 7, '¿Alguien quiere salir a tomar un café después?'),
+                                                       (2, 7, '¿Cómo van los avances del proyecto?'),
+                                                       (2, 7, 'Vamos a hacer un brainstorming de ideas.'),
+                                                       (2, 7, 'Me encanta trabajar con este equipo.'),
+                                                       (1, 7, '¿Han probado la nueva actualización del sistema?'),
+                                                       (1, 7, 'Voy a hacer una compra en línea, ¿alguien necesita algo?'),
+                                                       (1, 7, 'Se me ocurrió una idea para mejorar la aplicación.'),
+                                                       (1, 7, '¿Qué planes tienen para el fin de semana?'),
+                                                       (2, 7, 'Voy a revisar los correos en un rato.'),
+                                                       (2, 7, 'Gracias por la ayuda con la tarea.');
 
 
 

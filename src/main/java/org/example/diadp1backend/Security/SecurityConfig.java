@@ -36,6 +36,7 @@ public class SecurityConfig {
           .requestMatchers(GET, "/publicacion/eliminarPublicacion").hasAnyAuthority("true")
           .requestMatchers(GET, "/publicacion/eliminarComentario").hasAnyAuthority("true")
           .requestMatchers(GET, "/publicacion/**").permitAll()
+          .requestMatchers(GET, "/chat/**").permitAll()
           .anyRequest().authenticated()
       )
       .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
