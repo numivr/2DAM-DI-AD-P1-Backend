@@ -19,7 +19,7 @@ public class PublicacionController {
 
   private PublicacionService publicacionService;
 
-
+  // @GetMapping("/listarPublicaciones")
 
 
 
