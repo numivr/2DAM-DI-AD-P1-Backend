@@ -38,7 +38,7 @@ public class Usuario implements UserDetails {
   @Column(name = "es_admin", nullable = false)
   private Boolean esAdmin;
 
-  @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   private Cualidad cualidad;
 
   @ManyToMany
@@ -53,10 +53,10 @@ public class Usuario implements UserDetails {
   @ManyToMany(mappedBy = "seguidos")
   private Set<Usuario> seguidores = new HashSet<>();
 
-  @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   private Set<Publicacion> publicaciones = new HashSet<>();
 
-  @OneToMany(mappedBy = "emisor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "emisor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   private Set<Mensaje> mensajes = new HashSet<>();
 
   @ManyToMany
