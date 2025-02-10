@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
+
 @Entity
 @Table(name = "usuarios", schema = "bbdd_santuario")
 @Getter
@@ -60,10 +61,10 @@ public class Usuario implements UserDetails {
   @ManyToMany(mappedBy = "seguidos")
   private Set<Usuario> seguidores = new HashSet<>();
 
-  @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   private Set<Publicacion> publicaciones = new HashSet<>();
 
-  @OneToMany(mappedBy = "emisor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "emisor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   private Set<Mensaje> mensajes = new HashSet<>();
 
   @ManyToMany
@@ -110,3 +111,6 @@ public class Usuario implements UserDetails {
     return !this.baneado; // 🔹 El usuario solo está habilitado si no está baneado
   }
 }
+
+
+
