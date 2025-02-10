@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
   @Transactional
-  @Query(value = "SELECT u FROM Usuario u WHERE u.nombre = :nombre")
+  @Query(value = "SELECT * FROM bbdd_santuario.usuarios WHERE nombre = :nombre", nativeQuery = true)
   Optional<Usuario> findTopByNombre(@Param("nombre") String nombre);
 
   @Transactional
