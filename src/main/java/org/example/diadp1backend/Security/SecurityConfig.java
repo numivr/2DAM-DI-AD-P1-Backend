@@ -28,6 +28,7 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
+      .cors(AbstractHttpConfigurer::disable)
       .csrf(AbstractHttpConfigurer::disable)
       .authorizeHttpRequests(req ->
         req
@@ -37,6 +38,8 @@ public class SecurityConfig {
           .requestMatchers(GET, "/publicacion/eliminarComentario").hasAnyAuthority("true")
           .requestMatchers(GET, "/publicacion/**").permitAll()
           .requestMatchers(GET, "/chat/**").permitAll()
+          .requestMatchers(GET, "/perfil/**").permitAll()
+          .requestMatchers(GET, "/comentario/**").permitAll()
           .anyRequest().authenticated()
       )
       .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

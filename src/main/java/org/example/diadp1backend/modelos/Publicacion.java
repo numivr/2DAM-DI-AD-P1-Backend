@@ -31,7 +31,7 @@ public class Publicacion {
   @JoinColumn(name = "id_creador", nullable = false)
   private Usuario creador;
 
-  @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   private Set<Comentario> comentarios = new HashSet<>();
 
   @ManyToMany

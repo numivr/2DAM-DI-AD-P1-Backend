@@ -19,21 +19,26 @@ public class JWTService {
   private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
   //Método que a partir de un usuario genere un token
-  public String generateToken(Usuario usuario){
+  public String generateToken(Usuario usuario) {
     TokenDataDTO tokenDataDTO = TokenDataDTO
       .builder()
       .username(usuario.getUsername())
-      .rol(usuario.getEsAdmin().toString())
+      .rol(String.valueOf(usuario.getEsAdmin())) // Convertir a String
       .fecha_creacion(System.currentTimeMillis())
-      .fecha_expiracion(System.currentTimeMillis() + 1000*60*60*3)
+      .fecha_expiracion(System.currentTimeMillis() + 1000 * 60 * 60 * 3) // Expira en 3 horas
       .build();
 
-    return Jwts
-              .builder()
-              .claim("TokenDataDTO", tokenDataDTO)
-              .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-              .compact();
+    String token = Jwts.builder()
+      .setClaims(Map.of("TokenDataDTO", tokenDataDTO))
+      .setIssuedAt(new Date())
+      .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 3))
+      .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+      .compact();
+
+    System.out.println("✅ Token generado correctamente: " + token);
+    return token;
   }
+
 
   //Método que a  partir de un token te el usuario
 
@@ -48,13 +53,44 @@ public class JWTService {
               .getBody();
   }
 
-  public String extractUsername(String token){
-    return Jwts.parserBuilder()
-      .setSigningKey(getSignInKey())
-      .build()
-      .parseClaimsJws(token)
-      .getBody().getSubject();
+  public String extractUsername(String token) {
+    try {
+      System.out.println("🔹 Token recibido para extraer username: " + token);
+
+      Claims claims = Jwts.parserBuilder()
+        .setSigningKey(getSignInKey())
+        .build()
+        .parseClaimsJws(token)
+        .getBody();
+
+      System.out.println("🔹 Claims obtenidos: " + claims);
+
+      // Extraer datos del objeto TokenDataDTO
+      Object tokenDataObj = claims.get("TokenDataDTO");
+
+      if (tokenDataObj == null) {
+        throw new RuntimeException("❌ No se encontró TokenDataDTO en el token");
+      }
+
+      if (!(tokenDataObj instanceof Map)) {
+        throw new RuntimeException("❌ TokenDataDTO no tiene el formato correcto");
+      }
+
+      @SuppressWarnings("unchecked")
+      Map<String, Object> tokenData = (Map<String, Object>) tokenDataObj;
+
+      if (tokenData.containsKey("username")) {
+        return tokenData.get("username").toString();
+      } else {
+        throw new RuntimeException("❌ El campo 'username' no está en TokenDataDTO.");
+      }
+
+    } catch (Exception e) {
+      System.err.println("❌ Error al extraer username del JWT: " + e.getMessage());
+      return null;
+    }
   }
+
 
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
     final Claims claims = extractDatosToken(token);
@@ -107,11 +143,16 @@ public class JWTService {
 
 
 
-  public boolean isTokenValid(String token, Usuario usuario){
-    final String username = extractUsername(token);
-    return (username.equals(usuario.getUsername())) && !isTokenExpired(token);
-
+  public boolean isTokenValid(String token, Usuario usuario) {
+    try {
+      final String username = extractUsername(token);
+      return (username != null && username.equals(usuario.getUsername())) && !isTokenExpired(token);
+    } catch (Exception e) {
+      System.err.println("❌ Error en isTokenValid: " + e.getMessage());
+      return false;
+    }
   }
+
 
 
 
