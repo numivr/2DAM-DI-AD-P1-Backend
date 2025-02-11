@@ -15,4 +15,5 @@ public class PerfilDTO {
   private String raza;
   private String fotoPerfil;
   private List<PublicacionDTO> publicaciones;
+  private boolean siguiendo;  // ✅ Se agrega el atributo siguiendo
 }

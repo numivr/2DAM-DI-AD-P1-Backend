@@ -13,6 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PerfilService {
@@ -48,7 +49,7 @@ public class PerfilService {
 
 
 
-
+    boolean siguiendo = false;
 
     // Convertir publicaciones a DTO
     List<PublicacionDTO> publicacionesDTO = publicacionService.listarPublicacionesDeUsuario(usuario);
@@ -59,7 +60,48 @@ public class PerfilService {
       usuario.getSeguidos().size(),
       usuario.getCualidad() != null ? usuario.getCualidad().getRaza() : "No disponible",
       usuario.getCualidad() != null ? usuario.getCualidad().getFoto() : null,
-      publicacionesDTO
+      publicacionesDTO,
+      siguiendo
     );
   }
+
+
+    @Transactional
+    public PerfilDTO obtenerPerfilPorId(Integer id) {
+
+      // Obtener la solicitud HTTP actual
+      HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+      String authHeader = request.getHeader("Authorization");
+
+      if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        throw new RuntimeException("Token JWT no presente o mal formado");
+      }
+
+      String token = authHeader.substring(7);
+      String username = jwtService.extractTokenData(token).getUsername();
+
+      System.out.println("🔹 Usuario autenticado: " + username);
+
+      // Buscar usuario por nombre en la base de datos
+      Optional<Usuario> usuarioActual = usuarioRepository.findTopByNombre(username);
+
+    Usuario usuario = usuarioRepository.findById(id)
+      .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado con ID: " + id));
+
+
+      // Verificar si el usuario loggeado sigue a este perfil
+      boolean siguiendo = usuario.getSeguidores().contains(usuarioActual);
+
+    List<PublicacionDTO> publicacionesDTO = publicacionService.listarPublicacionesDeUsuario(usuario);
+
+      return new PerfilDTO(
+        usuario.getNombre(),
+        usuario.getSeguidores().size(),
+        usuario.getSeguidos().size(),
+        usuario.getCualidad() != null ? usuario.getCualidad().getRaza() : "No disponible",
+        usuario.getCualidad() != null ? usuario.getCualidad().getFoto() : null,
+        publicacionesDTO,
+        siguiendo
+      );
+    }
 }

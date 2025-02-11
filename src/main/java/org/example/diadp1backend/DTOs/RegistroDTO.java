@@ -10,8 +10,22 @@ import lombok.*;
 @AllArgsConstructor
 public class RegistroDTO {
 
-  //No le pondremos ni el rol ni el id
   private String usuario;
   private String password;
   private String email;
+
+  // 📌 Cualidades agregadas al DTO
+  private String foto;
+  private String genero;
+  private String edad;
+  private String raza;
+  private Integer nivelEnergia;
+  private Integer sociabilidad;
+  private Integer tamaño;
+  private Integer toleranciaEspecies;
+  private Integer nivelDominancia;
+  private Integer tendenciaJuego;
+  private Integer temperamento;
+  private Integer experiencia;
+  private Integer territorialidad;
 }
