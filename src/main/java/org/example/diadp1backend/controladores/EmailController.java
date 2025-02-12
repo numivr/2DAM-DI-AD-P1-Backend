@@ -1,5 +1,6 @@
 package org.example.diadp1backend.controladores;
 
+import org.example.diadp1backend.servicios.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,17 +11,15 @@ import org.springframework.web.bind.annotation.*;
 public class EmailController {
 
     @Autowired
-    private JavaMailSender mailSender;
+    private EmailService emailService;
 
     @PostMapping("/enviar-correo")
     public String enviarCorreo(@RequestBody EmailRequest request) {
         try {
-            SimpleMailMessage mensaje = new SimpleMailMessage();
-            mensaje.setTo(request.getEmail());
-            mensaje.setSubject("Confirmación de Registro");
-            mensaje.setText("Hola " + request.getNombre() + ",\n\nGracias por registrarte. Por favor, confirma tu cuenta.");
+            String asunto = "Confirmación de Registro";
+            String mensaje = "Hola " + request.getNombre() + ",\n\nGracias por registrarte. Confirma tu cuenta.";
 
-            mailSender.send(mensaje);
+            emailService.enviarCorreo(request.getEmail(), asunto, mensaje);
             return "Correo enviado correctamente";
         } catch (Exception e) {
             return "Error al enviar correo: " + e.getMessage();
