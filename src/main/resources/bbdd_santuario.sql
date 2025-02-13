@@ -87,7 +87,7 @@ CREATE TABLE Likes (
                      CONSTRAINT fk_usuario_like FOREIGN KEY (id_usuario) REFERENCES Usuarios(id) ON DELETE CASCADE
 );
 
--- Tabla: Comentarios
+-- Tabla: Comentariosº
 CREATE TABLE Comentarios (
                            id SERIAL PRIMARY KEY,
                            id_publicacion INT NOT NULL,

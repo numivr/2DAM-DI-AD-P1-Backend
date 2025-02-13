@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -42,5 +43,11 @@ public class Publicacion {
     inverseJoinColumns = @JoinColumn(name = "id_usuario")
   )
   private Set<Usuario> likes = new HashSet<>();
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id); // ⚠️ Solo usa el ID, NO la colección de comentarios
+  }
+
 
 }

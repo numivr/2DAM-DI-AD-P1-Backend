@@ -1,5 +1,6 @@
 package org.example.diadp1backend.controladores;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.example.diadp1backend.DTOs.PublicacionDTO;
 import org.example.diadp1backend.repositorios.PublicacionRepository;
@@ -43,6 +44,21 @@ public class PublicacionController {
     String username = principal.getName();
     publicacionService.quitarLike(idPublicacion, username);
     return ResponseEntity.ok("Like eliminado");
+  }
+
+  @PostMapping("/crear")
+  public ResponseEntity<?> crearPublicacion(@RequestBody PublicacionDTO publicacionDTO, HttpServletRequest request) {
+    try {
+      PublicacionDTO nuevaPublicacion = publicacionService.crearPublicacion(publicacionDTO, request);
+      return ResponseEntity.ok(nuevaPublicacion);
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body("❌ Error al crear la publicación: " + e.getMessage());
+    }
+  }
+
+  @GetMapping("/siguiendo")
+  public List<PublicacionDTO> listarPublicacionesDeUsuariosSeguidos() {
+    return publicacionService.listarPublicacionesDeUsuariosSeguidos();
   }
 
 

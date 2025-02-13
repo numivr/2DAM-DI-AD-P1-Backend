@@ -83,7 +83,8 @@ public class PerfilService {
       System.out.println("🔹 Usuario autenticado: " + username);
 
       // Buscar usuario por nombre en la base de datos
-      Optional<Usuario> usuarioActual = usuarioRepository.findTopByNombre(username);
+      Optional<Usuario> usuarioActualOptional = usuarioRepository.findTopByNombre(username);
+      Usuario usuarioActual = usuarioActualOptional.orElseThrow(() -> new RuntimeException("❌ Usuario autenticado no encontrado"));
 
     Usuario usuario = usuarioRepository.findById(id)
       .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado con ID: " + id));

@@ -10,16 +10,21 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublicacionDTO {
-  private Integer id; // 👈 Se agrega el ID de la publicación
-  private String perfil; // Nombre del creador de la publicación
-  private String fotoPerfil; // Foto del perfil del creador
-  private String texto; // Texto de la publicación
-  private String fotoPublicacion; // Imagen asociada a la publicación
-  private int numComentarios; // Número de comentarios en la publicación
-  private int numLikes; // Número de 'Me gusta' en la publicación
-  private boolean liked; // Si el usuario actual ha dado 'Me gusta' o no
-  private ArrayList<ComentarioDTO> comentarios; // Lista de comentarios asociados a la publicación
+  private Integer id;
+  private Integer idCreador; // ✅ Nuevo campo para almacenar el ID del creador
+  private String perfil;
+  private String fotoPerfil;
+  private String texto;
+  private String fotoPublicacion;
+  private int numComentarios;
+  private int numLikes;
+  private boolean liked;
+  private ArrayList<ComentarioDTO> comentarios;
 
-  public PublicacionDTO(Integer id, String texto, String imagen) {
+  public PublicacionDTO(Integer id, Integer idCreador, String texto, String imagen) {
+    this.id = id;
+    this.idCreador = idCreador;
+    this.texto = texto;
+    this.fotoPublicacion = imagen;
   }
 }
