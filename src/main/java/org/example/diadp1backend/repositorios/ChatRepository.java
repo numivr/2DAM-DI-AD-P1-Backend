@@ -31,4 +31,6 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
 
 
     List<Chat> findChatsById(Integer id);
+
+
 }

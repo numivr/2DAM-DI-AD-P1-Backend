@@ -41,6 +41,8 @@ public class SecurityConfig {
           .requestMatchers(GET, "/chat/**").permitAll()
           .requestMatchers(GET, "/perfil/**").permitAll()
           .requestMatchers(GET, "/comentario/**").permitAll()
+                .requestMatchers("/mensajes/**").permitAll()
+          .anyRequest().authenticated()
           .requestMatchers(GET,"/publicacion/buscar").permitAll()
                 .anyRequest().authenticated()
       )
