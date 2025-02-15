@@ -2,6 +2,7 @@ package org.example.diadp1backend.modelos;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class Cualidad {
   @OneToOne
   @MapsId
   @JoinColumn(name = "id_usuario")
+  @JsonBackReference
   private Usuario usuario;
 
   @Column(name = "foto")

@@ -1,5 +1,6 @@
 package org.example.diadp1backend.modelos;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +40,7 @@ public class Usuario implements UserDetails {
   private Boolean esAdmin;
 
   @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @JsonManagedReference
   private Cualidad cualidad;
 
   @ManyToMany
