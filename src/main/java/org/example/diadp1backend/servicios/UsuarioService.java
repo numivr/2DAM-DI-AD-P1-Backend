@@ -158,6 +158,75 @@ public class UsuarioService implements UserDetailsService {
     return jwtService.extractTokenData(token).getUsername();
   }
 
+  @Transactional
+  public void eliminarUsuario(Integer id, HttpServletRequest request) {
+    // Obtener el usuario autenticado desde el JWT
+    String authHeader = request.getHeader("Authorization");
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      throw new RuntimeException("Token JWT no presente o mal formado");
+    }
+
+    String token = authHeader.substring(7);
+    String username = jwtService.extractTokenData(token).getUsername();
+
+    Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
+            .orElseThrow(() -> new RuntimeException("❌ Usuario autenticado no encontrado"));
+
+    // Buscar el usuario a eliminar en la base de datos
+    Usuario usuarioEliminar = usuarioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado"));
+
+    // Verificar si el usuario es el mismo o si es un administrador
+    if (!usuarioActual.getId().equals(usuarioEliminar.getId()) && !usuarioActual.getEsAdmin()) {
+      throw new RuntimeException("⛔ No tienes permisos para eliminar este usuario");
+    }
+
+    // Eliminar las relaciones del usuario antes de eliminarlo
+    usuarioEliminar.getSeguidores().forEach(u -> u.getSeguidos().remove(usuarioEliminar));
+    usuarioEliminar.getSeguidos().forEach(u -> u.getSeguidores().remove(usuarioEliminar));
+
+    // Eliminar sus publicaciones y comentarios
+    usuarioEliminar.getPublicaciones().clear();
+
+    // Eliminar el usuario
+    usuarioRepository.delete(usuarioEliminar);
+  }
+
+  /**
+   * ✅ Método para cambiar el estado de baneo de un usuario.
+   */
+  @Transactional
+  public boolean cambiarEstadoBaneo(String nombreUsuario, HttpServletRequest request) {
+    // Obtener el usuario autenticado desde el JWT
+    String authHeader = request.getHeader("Authorization");
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      throw new RuntimeException("Token JWT no presente o mal formado");
+    }
+
+    String token = authHeader.substring(7);
+    String usernameAutenticado = jwtService.extractTokenData(token).getUsername();
+
+    Usuario usuarioActual = usuarioRepository.findTopByNombre(usernameAutenticado)
+            .orElseThrow(() -> new RuntimeException("❌ Usuario autenticado no encontrado"));
+
+    // Verificar si el usuario autenticado es un administrador
+    if (!usuarioActual.getEsAdmin()) {
+      throw new RuntimeException("⛔ No tienes permisos para banear o desbanear usuarios");
+    }
+
+    // Buscar el usuario a banear/desbanear
+    Usuario usuario = usuarioRepository.findTopByNombre(nombreUsuario)
+            .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado"));
+
+    // Cambiar el estado de baneo
+    usuario.setBaneado(!usuario.getBaneado());
+    usuarioRepository.save(usuario);
+
+    return usuario.getBaneado(); // Retorna el nuevo estado de baneo
+  }
+
+
+
 
 
 

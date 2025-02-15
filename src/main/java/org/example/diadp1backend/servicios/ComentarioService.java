@@ -75,6 +75,32 @@ public class ComentarioService {
     );
   }
 
+  @Transactional
+  public void eliminarComentario(Integer id, HttpServletRequest request) {
+    // Obtener el usuario autenticado desde el JWT
+    String authHeader = request.getHeader("Authorization");
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      throw new RuntimeException("Token JWT no presente o mal formado");
+    }
+
+    String token = authHeader.substring(7);
+    String username = jwtService.extractTokenData(token).getUsername();
+
+    Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
+      .orElseThrow(() -> new RuntimeException("❌ Usuario autenticado no encontrado"));
+
+    // Buscar el comentario en la base de datos
+    Comentario comentario = comentarioRepository.findById(id)
+      .orElseThrow(() -> new RuntimeException("❌ Comentario no encontrado"));
+
+    // Verificar si el usuario es el creador del comentario o un administrador
+    if (!comentario.getUsuario().getId().equals(usuarioActual.getId()) && !usuarioActual.getEsAdmin()) {
+      throw new RuntimeException("⛔ No tienes permisos para eliminar este comentario");
+    }
+
+    // Eliminar el comentario
+    comentarioRepository.delete(comentario);
+  }
 
 
 

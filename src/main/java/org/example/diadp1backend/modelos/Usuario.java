@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
-
 @Entity
 @Table(name = "usuarios", schema = "bbdd_santuario")
 @Getter
@@ -38,6 +37,12 @@ public class Usuario implements UserDetails {
 
   @Column(name = "es_admin", nullable = false)
   private Boolean esAdmin;
+
+  @Column(name = "verificado", nullable = false)
+  private Boolean verificado = false; // 🔹 Nuevo campo, por defecto false
+
+  @Column(name = "baneado", nullable = false)
+  private Boolean baneado = false; // 🔹 Nuevo campo, por defecto false
 
   @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   @JsonManagedReference
@@ -92,7 +97,7 @@ public class Usuario implements UserDetails {
 
   @Override
   public boolean isAccountNonLocked() {
-    return true;
+    return !this.baneado; // 🔹 La cuenta está bloqueada si está baneado
   }
 
   @Override
@@ -102,9 +107,6 @@ public class Usuario implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return true;
+    return !this.baneado; // 🔹 El usuario solo está habilitado si no está baneado
   }
 }
-
-
-

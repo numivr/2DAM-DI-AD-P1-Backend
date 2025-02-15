@@ -23,4 +23,16 @@ public class ComentarioController {
     ComentarioDTO comentarioDTO = comentarioService.crearComentario(comentarioRequest, request);
     return ResponseEntity.ok(comentarioDTO);
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> eliminarComentario(@PathVariable Integer id, HttpServletRequest request) {
+    try {
+      comentarioService.eliminarComentario(id, request);
+      return ResponseEntity.ok("✅ Comentario eliminado correctamente");
+    } catch (RuntimeException e) {
+      return ResponseEntity.badRequest().body("❌ Error al eliminar comentario: " + e.getMessage());
+    }
+  }
+
+
 }

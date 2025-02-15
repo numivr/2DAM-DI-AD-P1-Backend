@@ -299,6 +299,35 @@ public class PublicacionService {
   }
 
 
+  @Transactional
+  public void eliminarPublicacion(Integer id, HttpServletRequest request) {
+    // Obtener el usuario autenticado desde el JWT
+    String authHeader = request.getHeader("Authorization");
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      throw new RuntimeException("Token JWT no presente o mal formado");
+    }
+
+    String token = authHeader.substring(7);
+    String username = jwtService.extractTokenData(token).getUsername();
+
+    Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
+      .orElseThrow(() -> new RuntimeException("❌ Usuario autenticado no encontrado"));
+
+    // Buscar la publicación en la base de datos
+    Publicacion publicacion = publicacionRepository.findById(id)
+      .orElseThrow(() -> new RuntimeException("❌ Publicación no encontrada"));
+
+    // Verificar si el usuario es el creador de la publicación o un administrador
+    if (!publicacion.getCreador().getId().equals(usuarioActual.getId()) && !usuarioActual.getEsAdmin()) {
+      throw new RuntimeException("⛔ No tienes permisos para eliminar esta publicación");
+    }
+
+    // Eliminar la publicación y sus comentarios asociados
+    comentarioRepository.deleteAll(publicacion.getComentarios());
+    publicacionRepository.delete(publicacion);
+  }
+
+
 }
 
 

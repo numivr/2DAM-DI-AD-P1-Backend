@@ -62,6 +62,16 @@ public class PublicacionController {
   }
 
 
+  @DeleteMapping("/eliminar/{id}")
+  public ResponseEntity<String> eliminarPublicacion(@PathVariable Integer id, HttpServletRequest request) {
+    try {
+      publicacionService.eliminarPublicacion(id, request);
+      return ResponseEntity.ok("✅ Publicación eliminada correctamente");
+    } catch (RuntimeException e) {
+      return ResponseEntity.badRequest().body("❌ Error al eliminar publicación: " + e.getMessage());
+    }
+  }
+
 
 
 
