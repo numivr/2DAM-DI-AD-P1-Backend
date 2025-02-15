@@ -27,7 +27,11 @@ public class PerfilController {
     return perfilService.obtenerPerfilPorId(id);
   }
 
-
+  // ✅ Nuevo endpoint para obtener el perfil por nombre
+  @GetMapping("/nombre/{nombrePerfil}")
+  public PerfilDTO obtenerPerfilPorNombre(@PathVariable String nombrePerfil) {
+    return perfilService.obtenerPerfilPorNombre(nombrePerfil);
+  }
 
 }
 

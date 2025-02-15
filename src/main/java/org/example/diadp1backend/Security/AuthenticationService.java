@@ -5,6 +5,8 @@ import org.example.diadp1backend.DTOs.AuthenticationResponseDTO;
 import org.example.diadp1backend.DTOs.LoginDTO;
 import org.example.diadp1backend.DTOs.UsuarioDTO;
 import org.example.diadp1backend.converter.UsuarioMapper;
+import org.example.diadp1backend.modelos.Usuario;
+import org.example.diadp1backend.repositorios.UsuarioRepository;
 import org.example.diadp1backend.servicios.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +31,8 @@ public class AuthenticationService {
   private final JWTService jwtService;
   @Autowired
   private final AuthenticationManager authenticationManager;
+  @Autowired
+  private UsuarioRepository usuarioRepository;
 
 
   public AuthenticationResponseDTO register(UsuarioDTO usuarioDTO){
@@ -43,6 +47,26 @@ public class AuthenticationService {
 
   public AuthenticationResponseDTO login(LoginDTO loginDTO){
     UsuarioDTO user = usuarioService.getByUsername(loginDTO.getUsername());
+
+    Usuario usuario = usuarioRepository.findTopByNombre(loginDTO.getUsername())
+      .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado"));
+
+    // 🔹 Verificar si el usuario está baneado
+    if (usuario.getBaneado()) {
+      return AuthenticationResponseDTO
+        .builder()
+        .message("⛔ Acceso denegado: Tu cuenta ha sido baneada.")
+        .build();
+    }
+
+    // 🔹 Verificar si el usuario está verificado
+    if (!usuario.getVerificado()) {
+      return AuthenticationResponseDTO
+        .builder()
+        .message("⚠️ No puedes iniciar sesión hasta que tu cuenta sea verificada.")
+        .build();
+    }
+
     String usuarioRol = String.valueOf(user.isEsAdmin());
     authenticationManager.authenticate(
       new UsernamePasswordAuthenticationToken(

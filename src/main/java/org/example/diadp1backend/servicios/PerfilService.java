@@ -105,4 +105,46 @@ public class PerfilService {
         siguiendo
       );
     }
+
+
+  @Transactional
+  public PerfilDTO obtenerPerfilPorNombre(String nombrePerfil) {
+    // Obtener la solicitud HTTP actual
+    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    String authHeader = request.getHeader("Authorization");
+
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      throw new RuntimeException("Token JWT no presente o mal formado");
+    }
+
+    String token = authHeader.substring(7);
+    String username = jwtService.extractTokenData(token).getUsername();
+
+    System.out.println("🔹 Usuario autenticado: " + username);
+
+    // Buscar el usuario autenticado
+    Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
+      .orElseThrow(() -> new RuntimeException("❌ Usuario autenticado no encontrado"));
+
+    // Buscar el usuario cuyo perfil se quiere consultar
+    Usuario usuarioPerfil = usuarioRepository.findTopByNombre(nombrePerfil)
+      .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado con nombre: " + nombrePerfil));
+
+    // Verificar si el usuario loggeado sigue a este perfil
+    boolean siguiendo = usuarioPerfil.getSeguidores().contains(usuarioActual);
+
+    // Obtener sus publicaciones
+    List<PublicacionDTO> publicacionesDTO = publicacionService.listarPublicacionesDeUsuario(usuarioPerfil);
+
+    return new PerfilDTO(
+      usuarioPerfil.getNombre(),
+      usuarioPerfil.getSeguidores().size(),
+      usuarioPerfil.getSeguidos().size(),
+      usuarioPerfil.getCualidad() != null ? usuarioPerfil.getCualidad().getRaza() : "No disponible",
+      usuarioPerfil.getCualidad() != null ? usuarioPerfil.getCualidad().getFoto() : null,
+      publicacionesDTO,
+      siguiendo
+    );
+  }
+
 }
