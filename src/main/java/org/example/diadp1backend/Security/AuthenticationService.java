@@ -63,7 +63,7 @@ public class AuthenticationService {
     if (!usuario.getVerificado()) {
       return AuthenticationResponseDTO
         .builder()
-        .message("⚠️ No puedes iniciar sesión hasta que tu cuenta sea verificada.")
+        .message("⚠️ No puedes iniciar sesión hasta que tu cuenta sea verificada.\nPor favor, revisa tu correo.")
         .build();
     }
 

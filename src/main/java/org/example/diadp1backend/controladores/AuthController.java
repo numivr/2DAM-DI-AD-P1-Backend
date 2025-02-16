@@ -8,7 +8,10 @@ import org.example.diadp1backend.Security.AuthenticationService;
 import org.example.diadp1backend.modelos.Usuario;
 import org.example.diadp1backend.servicios.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -38,6 +41,39 @@ public class AuthController {
   @GetMapping("/credencialDisponible")
   public boolean credencialDisponible(@RequestParam String nombreUsuario){
     return usuarioService.credencialDisponible(nombreUsuario);
+  }
+
+  @PostMapping("/verificarCuenta")
+  public ResponseEntity<String> verificarCuenta(@RequestBody Map<String, String> payload) {
+    String usuario = payload.get("usuario");
+
+    if (usuario == null) {
+      return ResponseEntity.badRequest().body("❌ Error: Usuario no proporcionado.");
+    }
+
+    boolean verificado = usuarioService.verificarUsuario(usuario);
+    if (verificado) {
+      return ResponseEntity.ok("✅ Mail enviado con éxito.");
+    } else {
+      return ResponseEntity.badRequest().body("❌ Error: No se pudo enviar el Mail.");
+    }
+  }
+
+  @PostMapping("/confirmarVerificacion")
+  public ResponseEntity<String> confirmarVerificacion(@RequestBody Map<String, String> payload) {
+    System.out.println("📥 Request recibida: " + payload);
+    String usuario = payload.get("usuario");
+
+    if (usuario == null) {
+      return ResponseEntity.badRequest().body("❌ Error: Usuario no proporcionado.");
+    }
+
+    boolean verificado = usuarioService.confirmarVerificacionUsuario(usuario);
+    if (verificado) {
+      return ResponseEntity.ok("✅ Cuenta verificada correctamente.");
+    } else {
+      return ResponseEntity.badRequest().body("❌ Error: No se pudo verificar la cuenta.");
+    }
   }
 
 }

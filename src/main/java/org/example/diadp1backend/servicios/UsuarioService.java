@@ -26,7 +26,7 @@ public class UsuarioService implements UserDetailsService {
 
     private UsuarioRepository usuarioRepository;
 
-
+    private final JavaMailSender mailSender; // ✅ Servicio de email
 
     private final JWTService jwtService;
 
@@ -236,7 +236,51 @@ public class UsuarioService implements UserDetailsService {
 
 
 
+  public boolean enviarEmailVerificacion(Usuario usuario) {
+    try {
+      String subject = "Activa tu cuenta en Santuario";
+      String verificationUrl = "http://localhost:4200/auth/verificarCuenta?usuario=" + usuario.getNombre();
+      String message = "Hola " + usuario.getNombre() + ",\n\nPor favor, haz clic en el siguiente enlace para activar tu cuenta:\n"
+        + verificationUrl + "\n\nSi no creaste esta cuenta, ignora este mensaje.";
+
+      SimpleMailMessage email = new SimpleMailMessage();
+      email.setTo(usuario.getEmail());
+      email.setSubject(subject);
+      email.setText(message);
+      mailSender.send(email);
+
+      return true; // ✅ Retorna true si el email se envía correctamente
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false; // ❌ Retorna false si ocurre un error al enviar el email
+    }
+  }
+
+  public boolean verificarUsuario(String usuario) {
+    Usuario usuarioVerificar = usuarioRepository.findTopByNombre(usuario)
+      .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado"));
+
+    try {
+      enviarEmailVerificacion(usuarioVerificar);
+      return true; // ✅ Retorna true si el email se envía correctamente
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false; // ❌ Retorna false si ocurre un error al enviar el email
+    }
+  }
 
 
+  @Transactional
+  public boolean confirmarVerificacionUsuario(String usuario) {
+    Usuario usuarioVerificar = usuarioRepository.findTopByNombre(usuario)
+      .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado"));
+
+    if (!usuarioVerificar.getVerificado()) {
+      usuarioVerificar.setVerificado(true);
+      usuarioRepository.save(usuarioVerificar);
+      return true; // ✅ Éxito
+    }
+    return false; // ❌ Ya estaba verificado
+  }
 
 }
