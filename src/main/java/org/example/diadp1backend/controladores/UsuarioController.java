@@ -13,20 +13,20 @@ public class UsuarioController {
   @Autowired
   private UsuarioService usuarioService;
 
-  @PostMapping("/{id}/seguir")
-  public String seguirUsuario(@PathVariable Integer id, HttpServletRequest request) {
-    return usuarioService.seguirUsuario(id, request);
+  @PostMapping("/{nombreUsuario}/seguir")
+  public String seguirUsuario(@PathVariable String nombreUsuario, HttpServletRequest request) {
+    return usuarioService.seguirUsuario(nombreUsuario, request);
   }
 
-  @DeleteMapping("/{id}/dejarSeguir")
-  public String dejarSeguirUsuario(@PathVariable Integer id, HttpServletRequest request) {
-    return usuarioService.dejarSeguirUsuario(id, request);
+  @DeleteMapping("/{nombreUsuario}/dejarSeguir")
+  public String dejarSeguirUsuario(@PathVariable String nombreUsuario, HttpServletRequest request) {
+    return usuarioService.dejarSeguirUsuario(nombreUsuario, request);
   }
 
-  @DeleteMapping("/eliminar/{id}")
-  public ResponseEntity<String> eliminarUsuario(@PathVariable Integer id, HttpServletRequest request) {
+  @DeleteMapping("/eliminar/{nombreUsuario}")
+  public ResponseEntity<String> eliminarUsuario(@PathVariable String nombreUsuario, HttpServletRequest request) {
     try {
-      usuarioService.eliminarUsuario(id, request);
+      usuarioService.eliminarUsuario(nombreUsuario, request);
       return ResponseEntity.ok("✅ Usuario eliminado correctamente");
     } catch (RuntimeException e) {
       return ResponseEntity.badRequest().body("❌ Error al eliminar usuario: " + e.getMessage());

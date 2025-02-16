@@ -12,6 +12,8 @@ import org.example.diadp1backend.modelos.Cualidad;
 import org.example.diadp1backend.modelos.Usuario;
 import org.example.diadp1backend.repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,12 +26,18 @@ public class UsuarioService implements UserDetailsService {
 
     private UsuarioRepository usuarioRepository;
 
+
+
     private final JWTService jwtService;
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     private UsuarioMapper usuarioMapper;
+
+
+
+
 
 
   @Override
@@ -100,14 +108,15 @@ public class UsuarioService implements UserDetailsService {
     return false;
     }
 
-  @Transactional
-  public String seguirUsuario(Integer id, HttpServletRequest request) {
-
+  /**
+   * ✅ Seguir a un usuario por su nombre
+   */
+  public String seguirUsuario(String nombreUsuario, HttpServletRequest request) {
     String username = obtenerUsuarioAutenticado(request);
     Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
       .orElseThrow(() -> new RuntimeException("Usuario autenticado no encontrado"));
 
-    Usuario usuarioSeguir = usuarioRepository.findById(id)
+    Usuario usuarioSeguir = usuarioRepository.findTopByNombre(nombreUsuario)
       .orElseThrow(() -> new RuntimeException("Usuario a seguir no encontrado"));
 
     if (usuarioActual.getSeguidos().contains(usuarioSeguir)) {
@@ -123,15 +132,15 @@ public class UsuarioService implements UserDetailsService {
     return "Ahora sigues a " + usuarioSeguir.getNombre();
   }
 
-
-
-  @Transactional
-  public String dejarSeguirUsuario(Integer id, HttpServletRequest request) {
+  /**
+   * ✅ Dejar de seguir a un usuario por su nombre
+   */
+  public String dejarSeguirUsuario(String nombreUsuario, HttpServletRequest request) {
     String username = obtenerUsuarioAutenticado(request);
     Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
       .orElseThrow(() -> new RuntimeException("Usuario autenticado no encontrado"));
 
-    Usuario usuarioDejarSeguir = usuarioRepository.findById(id)
+    Usuario usuarioDejarSeguir = usuarioRepository.findTopByNombre(nombreUsuario)
       .orElseThrow(() -> new RuntimeException("Usuario a dejar de seguir no encontrado"));
 
     if (!usuarioActual.getSeguidos().contains(usuarioDejarSeguir)) {
@@ -147,6 +156,7 @@ public class UsuarioService implements UserDetailsService {
     return "Has dejado de seguir a " + usuarioDejarSeguir.getNombre();
   }
 
+
   private String obtenerUsuarioAutenticado(HttpServletRequest request) {
     String authHeader = request.getHeader("Authorization");
 
@@ -158,26 +168,20 @@ public class UsuarioService implements UserDetailsService {
     return jwtService.extractTokenData(token).getUsername();
   }
 
-  @Transactional
-  public void eliminarUsuario(Integer id, HttpServletRequest request) {
-    // Obtener el usuario autenticado desde el JWT
-    String authHeader = request.getHeader("Authorization");
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      throw new RuntimeException("Token JWT no presente o mal formado");
-    }
-
-    String token = authHeader.substring(7);
-    String username = jwtService.extractTokenData(token).getUsername();
-
+  /**
+   * ✅ Eliminar usuario por su nombre (solo si es el mismo usuario o es admin)
+   */
+  public void eliminarUsuario(String nombreUsuario, HttpServletRequest request) {
+    String username = obtenerUsuarioAutenticado(request);
     Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
-            .orElseThrow(() -> new RuntimeException("❌ Usuario autenticado no encontrado"));
+      .orElseThrow(() -> new RuntimeException("❌ Usuario autenticado no encontrado"));
 
-    // Buscar el usuario a eliminar en la base de datos
-    Usuario usuarioEliminar = usuarioRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado"));
+    // Buscar el usuario a eliminar en la base de datos por nombre
+    Usuario usuarioEliminar = usuarioRepository.findTopByNombre(nombreUsuario)
+      .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado"));
 
     // Verificar si el usuario es el mismo o si es un administrador
-    if (!usuarioActual.getId().equals(usuarioEliminar.getId()) && !usuarioActual.getEsAdmin()) {
+    if (!usuarioActual.getNombre().equals(usuarioEliminar.getNombre()) && !usuarioActual.getEsAdmin()) {
       throw new RuntimeException("⛔ No tienes permisos para eliminar este usuario");
     }
 
@@ -191,6 +195,8 @@ public class UsuarioService implements UserDetailsService {
     // Eliminar el usuario
     usuarioRepository.delete(usuarioEliminar);
   }
+
+
 
   /**
    * ✅ Método para cambiar el estado de baneo de un usuario.
@@ -225,6 +231,23 @@ public class UsuarioService implements UserDetailsService {
     return usuario.getBaneado(); // Retorna el nuevo estado de baneo
   }
 
+
+
+  /**
+   * 📩 Método para enviar el email de verificación con enlace único
+   */
+  private void enviarEmailVerificacion(Usuario usuario) {
+    String subject = "Activa tu cuenta en Santuario";
+    String verificationUrl = "http://localhost:8080/auth/verify?usuario=" + usuario.getNombre();
+    String message = "Hola " + usuario.getNombre() + ",\n\nPor favor, haz clic en el siguiente enlace para activar tu cuenta:\n"
+      + verificationUrl + "\n\nSi no creaste esta cuenta, ignora este mensaje.";
+
+    SimpleMailMessage email = new SimpleMailMessage();
+    email.setTo(usuario.getEmail());
+    email.setSubject(subject);
+    email.setText(message);
+
+  }
 
 
 
