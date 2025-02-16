@@ -26,7 +26,7 @@ public class UsuarioService implements UserDetailsService {
 
     private UsuarioRepository usuarioRepository;
 
-    private final JavaMailSender mailSender; // ✅ Servicio de email
+
 
     private final JWTService jwtService;
 
@@ -234,23 +234,6 @@ public class UsuarioService implements UserDetailsService {
     return usuario.getBaneado(); // Retorna el nuevo estado de baneo
   }
 
-
-
-  /**
-   * 📩 Método para enviar el email de verificación con enlace único
-   */
-  private void enviarEmailVerificacion(Usuario usuario) {
-    String subject = "Activa tu cuenta en Santuario";
-    String verificationUrl = "http://localhost:8080/auth/verify?usuario=" + usuario.getNombre();
-    String message = "Hola " + usuario.getNombre() + ",\n\nPor favor, haz clic en el siguiente enlace para activar tu cuenta:\n"
-      + verificationUrl + "\n\nSi no creaste esta cuenta, ignora este mensaje.";
-
-    SimpleMailMessage email = new SimpleMailMessage();
-    email.setTo(usuario.getEmail());
-    email.setSubject(subject);
-    email.setText(message);
-    mailSender.send(email);
-  }
 
 
 
