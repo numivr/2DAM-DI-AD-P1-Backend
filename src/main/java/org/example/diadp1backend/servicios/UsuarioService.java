@@ -26,7 +26,7 @@ public class UsuarioService implements UserDetailsService {
 
     private UsuarioRepository usuarioRepository;
 
-
+    private final JavaMailSender mailSender; // ✅ Servicio de email
 
     private final JWTService jwtService;
 
@@ -111,6 +111,7 @@ public class UsuarioService implements UserDetailsService {
   /**
    * ✅ Seguir a un usuario por su nombre
    */
+  @Transactional
   public String seguirUsuario(String nombreUsuario, HttpServletRequest request) {
     String username = obtenerUsuarioAutenticado(request);
     Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
@@ -135,6 +136,7 @@ public class UsuarioService implements UserDetailsService {
   /**
    * ✅ Dejar de seguir a un usuario por su nombre
    */
+  @Transactional
   public String dejarSeguirUsuario(String nombreUsuario, HttpServletRequest request) {
     String username = obtenerUsuarioAutenticado(request);
     Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
@@ -171,6 +173,7 @@ public class UsuarioService implements UserDetailsService {
   /**
    * ✅ Eliminar usuario por su nombre (solo si es el mismo usuario o es admin)
    */
+  @Transactional
   public void eliminarUsuario(String nombreUsuario, HttpServletRequest request) {
     String username = obtenerUsuarioAutenticado(request);
     Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
@@ -246,7 +249,7 @@ public class UsuarioService implements UserDetailsService {
     email.setTo(usuario.getEmail());
     email.setSubject(subject);
     email.setText(message);
-
+    mailSender.send(email);
   }
 
 
