@@ -107,7 +107,7 @@ public class PublicacionService {
 
     System.out.println("✅ Publicación encontrada con ID: " + id);
 
-
+    Usuario usuarioActual = getUsuario();
 
 
     // Convertir a DTO
@@ -149,6 +149,7 @@ public class PublicacionService {
     dto.setNumComentarios((comentariosDTO.size()));
     dto.setNumLikes(likes.size());
     dto.setComentarios((ArrayList<ComentarioDTO>) comentariosDTO); // 👈 Se agregan los comentarios al DTO
+    dto.setLiked(likes.stream().anyMatch(usuario -> usuario.getId().equals(usuarioActual.getId())));
 
     return dto;
   }
