@@ -61,7 +61,8 @@ public class PerfilService {
       usuario.getCualidad() != null ? usuario.getCualidad().getRaza() : "No disponible",
       usuario.getCualidad() != null ? usuario.getCualidad().getFoto() : null,
       publicacionesDTO,
-      siguiendo
+      siguiendo,
+      usuario.getEsAdmin()
     );
   }
 
@@ -102,7 +103,8 @@ public class PerfilService {
         usuario.getCualidad() != null ? usuario.getCualidad().getRaza() : "No disponible",
         usuario.getCualidad() != null ? usuario.getCualidad().getFoto() : null,
         publicacionesDTO,
-        siguiendo
+        siguiendo,
+        usuario.getEsAdmin()
       );
     }
 
@@ -143,7 +145,8 @@ public class PerfilService {
       usuarioPerfil.getCualidad() != null ? usuarioPerfil.getCualidad().getRaza() : "No disponible",
       usuarioPerfil.getCualidad() != null ? usuarioPerfil.getCualidad().getFoto() : null,
       publicacionesDTO,
-      siguiendo
+      siguiendo,
+      usuarioPerfil.getEsAdmin()
     );
   }
 
