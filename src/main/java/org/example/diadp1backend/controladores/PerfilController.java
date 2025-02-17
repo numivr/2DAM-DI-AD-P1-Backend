@@ -33,6 +33,10 @@ public class PerfilController {
     return perfilService.obtenerPerfilPorNombre(nombrePerfil);
   }
 
+  @GetMapping("/perfilNombre")
+    public String obtenerPerfilPorNombre() {
+        return perfilService.obtenerNombreUsuarioLoggeado();
+    }
 }
 
 

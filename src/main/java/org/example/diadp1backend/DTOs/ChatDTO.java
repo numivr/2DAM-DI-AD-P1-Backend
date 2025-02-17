@@ -17,6 +17,6 @@ public class ChatDTO {
     private String nombre;
     private String tipo;
     private List<String> foto;
-    private String ultimoMensaje;
-    private String fechaUltimoMensaje;
+    private String ultimoMensaje = "";
+    private String fechaUltimoMensaje = "";
 }

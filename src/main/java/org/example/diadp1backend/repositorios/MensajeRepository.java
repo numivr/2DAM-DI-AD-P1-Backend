@@ -10,7 +10,8 @@ import java.util.List;
 @Repository
 
 public interface MensajeRepository extends JpaRepository<Mensaje, Integer> {
-
+    @Query(value = "SELECT * FROM bbdd_santuario.mensajes m WHERE m.id_chat = :idChat ORDER BY m.fecha asc", nativeQuery = true)
+    List<Mensaje> findMensajesByChatId(Integer idChat);
 
 
 

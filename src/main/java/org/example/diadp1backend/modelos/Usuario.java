@@ -110,3 +110,6 @@ public class Usuario implements UserDetails {
     return !this.baneado; // 🔹 El usuario solo está habilitado si no está baneado
   }
 }
+
+
+

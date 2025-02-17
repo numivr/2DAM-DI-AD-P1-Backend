@@ -1,9 +1,15 @@
 package org.example.diadp1backend.DTOs;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
 public class MensajeDTO {
   private Integer id;
-  private Integer id_chat;
-  private Integer id_emisor;
+  private Integer idChat;
+  private Integer idEmisor;
+  private String nombreEmisor;
   private String contenido;
   private java.sql.Timestamp fecha;
 }
