@@ -17,4 +17,5 @@ public class PerfilDTO {
   private List<PublicacionDTO> publicaciones;
   private boolean siguiendo;  // ✅ Se agrega el atributo siguiendo
   private boolean esAdmin;
+  private boolean baneado;
 }
