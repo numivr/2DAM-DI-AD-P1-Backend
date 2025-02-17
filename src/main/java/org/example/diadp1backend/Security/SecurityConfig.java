@@ -33,8 +33,8 @@ public class SecurityConfig {
       .authorizeHttpRequests(req ->
         req
           .requestMatchers(("/auth/**")).permitAll()
-          .requestMatchers(GET, "/usuario/eliminarUsuario").permitAll()
-          .requestMatchers(GET, "/usuario/banearUsuario").hasAnyAuthority("true")
+          .requestMatchers(GET, "/usuarios/**").permitAll()
+          .requestMatchers(GET, "/usuarios/banear").hasAnyAuthority("true")
           .requestMatchers(GET, "/publicacion/eliminarPublicacion").permitAll()
           .requestMatchers(GET, "/publicacion/eliminarComentario").permitAll()
           .requestMatchers(GET, "/publicacion/**").permitAll()
