@@ -82,6 +82,7 @@ public class PublicacionService {
     return publicaciones.stream().map(p -> {
       PublicacionDTO dto = new PublicacionDTO();
 
+
       dto.setId(p.getId());
       dto.setIdCreador(p.getCreador().getId()); //
       dto.setPerfil(p.getCreador().getNombre());
@@ -89,11 +90,15 @@ public class PublicacionService {
       dto.setTexto(p.getTexto());
       dto.setFotoPublicacion(p.getImagen());
 
+
       List<Comentario> comentarios = comentarioRepository.obtenerComentariosPorPublicacionId(p.getId());
       Set<Usuario> likes = new HashSet<>(p.getLikes());
 
+      Usuario usuarioActual = getUsuario();
+
       dto.setNumComentarios((comentarios.size()));
       dto.setNumLikes(likes.size());
+      dto.setLiked(likes.stream().anyMatch(usuarioLike -> usuario.getId().equals(usuarioActual.getId())));
 
       return dto;
     }).collect(Collectors.toList());
