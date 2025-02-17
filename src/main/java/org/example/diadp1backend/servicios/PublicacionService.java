@@ -30,57 +30,57 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PublicacionService {
 
-  private final PublicacionRepository publicacionRepository;
-  private final UsuarioRepository usuarioRepository;
-  private final JWTService jwtService;
-  private final ComentarioRepository comentarioRepository;
-  private final CualidadRepository cualidadRepository;
+    private final PublicacionRepository publicacionRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final JWTService jwtService;
+    private final ComentarioRepository comentarioRepository;
+    private final CualidadRepository cualidadRepository;
 
-  @Transactional
-  public List<PublicacionDTO> listarPublicaciones() {
-    Usuario usuarioActual = getUsuario();
-    List<Publicacion> publicaciones = publicacionRepository.findAllWithDetails();
+    @Transactional
+    public List<PublicacionDTO> listarPublicaciones() {
+        Usuario usuarioActual = getUsuario();
+        List<Publicacion> publicaciones = publicacionRepository.findAllWithDetails();
 
-    return publicaciones.stream().map(p -> {
-      PublicacionDTO dto = new PublicacionDTO();
-      dto.setId(p.getId());
-      dto.setIdCreador(p.getCreador().getId()); // ✅ Ahora incluye el ID del creador
-      dto.setPerfil(p.getCreador().getNombre());
-      dto.setFotoPerfil(p.getCreador().getCualidad() != null ? p.getCreador().getCualidad().getFoto() : null);
-      dto.setTexto(p.getTexto());
-      dto.setFotoPublicacion(p.getImagen());
+        return publicaciones.stream().map(p -> {
+            PublicacionDTO dto = new PublicacionDTO();
+            dto.setId(p.getId());
+            dto.setIdCreador(p.getCreador().getId()); // ✅ Ahora incluye el ID del creador
+            dto.setPerfil(p.getCreador().getNombre());
+            dto.setFotoPerfil(p.getCreador().getCualidad() != null ? p.getCreador().getCualidad().getFoto() : null);
+            dto.setTexto(p.getTexto());
+            dto.setFotoPublicacion(p.getImagen());
 
-      List<Comentario> comentarios = comentarioRepository.obtenerComentariosPorPublicacionId(p.getId());
-      Set<Usuario> likes = new HashSet<>(p.getLikes());
+            List<Comentario> comentarios = comentarioRepository.obtenerComentariosPorPublicacionId(p.getId());
+            Set<Usuario> likes = new HashSet<>(p.getLikes());
 
-      dto.setNumComentarios(comentarios.size());
-      dto.setNumLikes(likes.size());
-      dto.setLiked(likes.stream().anyMatch(usuario -> usuario.getId().equals(usuarioActual.getId())));
+            dto.setNumComentarios(comentarios.size());
+            dto.setNumLikes(likes.size());
+            dto.setLiked(likes.stream().anyMatch(usuario -> usuario.getId().equals(usuarioActual.getId())));
 
-      return dto;
-    }).collect(Collectors.toList());
-  }
-
-
-  @Transactional
-  public List<PublicacionDTO> listarPublicacionesDeUsuario(Usuario usuario) {
-    // Validar si el usuario existe en la base de datos
-    Usuario usuarioExistente = usuarioRepository.findById(usuario.getId())
-      .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado con ID: " + usuario.getId()));
-
-    System.out.println("✅ Usuario encontrado: " + usuarioExistente.getNombre());
-
-    // Obtener publicaciones del usuario
-    List<Publicacion> publicaciones = new ArrayList<>(usuarioExistente.getPublicaciones());
-
-    if (publicaciones.isEmpty()) {
-      System.out.println("⚠️ El usuario no tiene publicaciones.");
-    } else {
-      System.out.println("📝 Publicaciones encontradas: " + publicaciones.size());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
-    return publicaciones.stream().map(p -> {
-      PublicacionDTO dto = new PublicacionDTO();
+
+    @Transactional
+    public List<PublicacionDTO> listarPublicacionesDeUsuario(Usuario usuario) {
+        // Validar si el usuario existe en la base de datos
+        Usuario usuarioExistente = usuarioRepository.findById(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado con ID: " + usuario.getId()));
+
+        System.out.println("✅ Usuario encontrado: " + usuarioExistente.getNombre());
+
+        // Obtener publicaciones del usuario
+        List<Publicacion> publicaciones = new ArrayList<>(usuarioExistente.getPublicaciones());
+
+        if (publicaciones.isEmpty()) {
+            System.out.println("⚠️ El usuario no tiene publicaciones.");
+        } else {
+            System.out.println("📝 Publicaciones encontradas: " + publicaciones.size());
+        }
+
+        return publicaciones.stream().map(p -> {
+            PublicacionDTO dto = new PublicacionDTO();
 
 
       dto.setId(p.getId());
@@ -100,51 +100,49 @@ public class PublicacionService {
       dto.setNumLikes(likes.size());
       dto.setLiked(likes.stream().anyMatch(usuarioLike -> usuario.getId().equals(usuarioActual.getId())));
 
-      return dto;
-    }).collect(Collectors.toList());
-  }
+            return dto;
+        }).collect(Collectors.toList());
+    }
 
-  @Transactional
-  public PublicacionDTO obtenerPublicacionPorId(Integer id) {
-    // Buscar la publicación en el repositorio
-    Publicacion publicacion = publicacionRepository.findById(id)
-      .orElseThrow(() -> new RuntimeException("❌ Publicación no encontrada con ID: " + id));
+    @Transactional
+    public PublicacionDTO obtenerPublicacionPorId(Integer id) {
+        // Buscar la publicación en el repositorio
+        Publicacion publicacion = publicacionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("❌ Publicación no encontrada con ID: " + id));
 
-    System.out.println("✅ Publicación encontrada con ID: " + id);
+        System.out.println("✅ Publicación encontrada con ID: " + id);
 
-    Usuario usuarioActual = getUsuario();
-
-
-    // Convertir a DTO
-    PublicacionDTO dto = new PublicacionDTO();
-    dto.setId(publicacion.getId());
-    dto.setIdCreador(publicacion.getCreador().getId()); //
-    dto.setPerfil(publicacion.getCreador().getNombre());
-    dto.setFotoPerfil(publicacion.getCreador().getCualidad() != null ? publicacion.getCreador().getCualidad().getFoto() : null);
-    dto.setTexto(publicacion.getTexto());
-    dto.setFotoPublicacion(publicacion.getImagen());
-
-    // ✅ Formateador para la fecha
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-    // Obtener publicaciones del usuario
-    List<Comentario> comentarios = comentarioRepository.obtenerComentariosPorPublicacionId(id);
+        Usuario usuarioActual = getUsuario();
 
 
+        // Convertir a DTO
+        PublicacionDTO dto = new PublicacionDTO();
+        dto.setId(publicacion.getId());
+        dto.setIdCreador(publicacion.getCreador().getId()); //
+        dto.setPerfil(publicacion.getCreador().getNombre());
+        dto.setFotoPerfil(publicacion.getCreador().getCualidad() != null ? publicacion.getCreador().getCualidad().getFoto() : null);
+        dto.setTexto(publicacion.getTexto());
+        dto.setFotoPublicacion(publicacion.getImagen());
+
+        // ✅ Formateador para la fecha
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // Obtener publicaciones del usuario
+        List<Comentario> comentarios = comentarioRepository.obtenerComentariosPorPublicacionId(id);
 
 
-    // Convertir comentarios a DTO con formato correcto de fecha
-    List<ComentarioDTO> comentariosDTO = comentarios
-      .stream()
-      .map(comentario -> new ComentarioDTO(
-        comentario.getId(),
-        comentario.getPublicacion().getId(),
-        comentario.getUsuario().getNombre(),
-        comentario.getUsuario().getCualidad().getFoto(),
-        comentario.getTexto(),
-        comentario.getFecha().toLocalDateTime().format(formatter) // ✅ Ahora la fecha es un String formateado
-      ))
-      .collect(Collectors.toList());
+        // Convertir comentarios a DTO con formato correcto de fecha
+        List<ComentarioDTO> comentariosDTO = comentarios
+                .stream()
+                .map(comentario -> new ComentarioDTO(
+                        comentario.getId(),
+                        comentario.getPublicacion().getId(),
+                        comentario.getUsuario().getNombre(),
+                        comentario.getUsuario().getCualidad().getFoto(),
+                        comentario.getTexto(),
+                        comentario.getFecha().toLocalDateTime().format(formatter) // ✅ Ahora la fecha es un String formateado
+                ))
+                .collect(Collectors.toList());
 
 
 
@@ -333,7 +331,30 @@ public class PublicacionService {
     publicacionRepository.delete(publicacion);
   }
 
+    @Transactional
+    public List<PublicacionDTO> buscarPorTexto(String palabra) {
+        List<Publicacion> publicaciones = publicacionRepository.findByTextoContainingIgnoreCase(palabra);
 
+        if (palabra.startsWith("@")) {
+            String username = palabra.substring(1);
+            publicaciones = publicacionRepository.findByCreadorNombreContainingIgnoreCase(username);
+        } else {
+            publicaciones = publicacionRepository.findByTextoContainingIgnoreCase(palabra);
+        }
+
+        return publicaciones.stream().map(pub -> new PublicacionDTO(
+                pub.getId(),
+                pub.getCreador().getId(),
+                pub.getCreador().getNombre(),
+                pub.getCreador().getCualidad() != null ? pub.getCreador().getCualidad().getFoto() : null,
+                pub.getTexto(),
+                pub.getImagen(),
+                pub.getComentarios().size(),
+                pub.getLikes().size(),
+                pub.getLikes().stream().anyMatch(usuario -> usuario.getId().equals(getUsuario().getId())),
+                new ArrayList<>()
+        )).collect(Collectors.toList());
+    }
 }
 
 

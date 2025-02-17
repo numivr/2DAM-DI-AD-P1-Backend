@@ -22,4 +22,7 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
   boolean existsLikeByPublicacionAndUsuario(@Param("idPublicacion") Integer idPublicacion,
                                             @Param("idUsuario") Integer idUsuario);
 
+
+  List<Publicacion> findByCreadorNombreContainingIgnoreCase(String nombre);
+  List<Publicacion> findByTextoContainingIgnoreCase(String palabra);
 }
