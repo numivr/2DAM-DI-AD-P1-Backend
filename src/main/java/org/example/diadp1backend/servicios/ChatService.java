@@ -2,8 +2,7 @@
 package org.example.diadp1backend.servicios;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.example.diadp1backend.DTOs.ChatDTO;
-import org.example.diadp1backend.DTOs.MensajeDTO;
+import org.example.diadp1backend.DTOs.*;
 import org.example.diadp1backend.Security.JWTService;
 import org.example.diadp1backend.Security.TokenDataDTO;
 import org.example.diadp1backend.modelos.Chat;
@@ -18,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -74,25 +71,135 @@ public class ChatService {
             dto.setId(c.getId());
 
             Mensaje ultimoMensaje = chatRepository.getUltimoMensaje(c.getId());
+
             if (c.getNombre() == null) {
                 dto.setNombre(chatRepository.findNombreUsuarioByChatId(c.getId(), userId));
                 dto.setUltimoMensaje(ultimoMensaje.getContenido());
 
             } else {
                 dto.setNombre(c.getNombre());
+                if(ultimoMensaje ==null){
+                    dto.setUltimoMensaje("");
+                } else {
                 dto.setUltimoMensaje(ultimoMensaje.getEmisor().getNombre() + ": " + ultimoMensaje.getContenido());
+                dto.setFechaUltimoMensaje(TimestampFormatter.formatTimestamp(ultimoMensaje.getFecha()));
+
+                }
             }
             fotos = new ArrayList<>(chatRepository.findFotoByUsuarioId(c.getId(), userId));
             dto.setFoto(fotos);
-            dto.setFechaUltimoMensaje(TimestampFormatter.formatTimestamp(chatRepository.getUltimoMensaje(c.getId()).getFecha()));
-
             dto.setTipo(c.getTipo());
             listaDTOs.add(dto);
         }
+
 
         return listaDTOs;
     }
 
 
+    @Transactional
+    public CrearChatDTO createChat(CrearChatDTO crearChatDTO) {
+        Chat chat = new Chat();
+        chat.setNombre(crearChatDTO.getNombre());
+        chat.setTipo(crearChatDTO.getTipo());
 
+        chatRepository.save(chat);  // Guardar el chat en la BD primero
+
+        // Verificar que los usuarios existen y obtener sus IDs
+        List<Integer> miembrosIds = crearChatDTO.getMiembros().stream()
+                .map(miembroId -> usuarioRepository.findById(miembroId)
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + miembroId)))
+                .map(Usuario::getId)
+                .collect(Collectors.toList());
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Token JWT no presente o mal formado");
+        }
+
+        String token = authHeader.substring(7);
+        TokenDataDTO tokenDataDTO = jwtService.extractTokenData(token);
+        String username = tokenDataDTO.getUsername();
+
+        System.out.println("Usuario autenticado: " + username);
+
+        Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Integer userId = usuarioRepository.findUsuarioIdByNombre(usuarioActual.getNombre());
+
+
+        // Insertar cada miembro uno por uno
+        for (Integer miembroId : miembrosIds) {
+            chatRepository.saveMiembroChat(chat.getId(), miembroId);
+        }
+        chatRepository.saveMiembroChat(chat.getId(), userId);
+
+        return crearChatDTO;
+    }
+
+    @Transactional
+    public List<ChatDTO> salirGrupo(Integer grupoId) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Token JWT no presente o mal formado");
+        }
+
+        String token = authHeader.substring(7);
+        TokenDataDTO tokenDataDTO = jwtService.extractTokenData(token);
+        String username = tokenDataDTO.getUsername();
+
+        System.out.println("Usuario autenticado: " + username);
+
+        Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Integer userId = usuarioRepository.findUsuarioIdByNombre(usuarioActual.getNombre());
+
+        chatRepository.deleteMiembroFromChat(grupoId, userId);
+
+        return getActiveChatsWithUserProfiles();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ListarUsuarioDTO> listarMiembros(Integer chatId) {
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new RuntimeException("Chat no encontrado"));
+        return chat.getMiembros().stream()
+                .map(usuario -> new ListarUsuarioDTO(usuario.getId(), usuario.getNombre(), chatRepository.findFotoByUsuarioId(chatId, usuario.getId()).get(0)))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ListarUsuarioDTO> listarAmigos() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Token JWT no presente o mal formado");
+        }
+
+        String token = authHeader.substring(7);
+        TokenDataDTO tokenDataDTO = jwtService.extractTokenData(token);
+        String username = tokenDataDTO.getUsername();
+
+        System.out.println("Usuario autenticado: " + username);
+
+        Usuario usuarioActual = usuarioRepository.findTopByNombre(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Integer userId = usuarioRepository.findUsuarioIdByNombre(usuarioActual.getNombre());
+
+        List<Usuario> amigos = usuarioRepository.findAmigosById(userId);
+
+        return amigos.stream()
+                .map(usuario -> new ListarUsuarioDTO(usuario.getId(), usuario.getNombre(), chatRepository.findFotoByUsuarioId(1, usuario.getId()).get(0)))
+                .collect(Collectors.toList());
+    }
 }
+
+
