@@ -23,6 +23,6 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Intege
                                             @Param("idUsuario") Integer idUsuario);
 
 
-
+  List<Publicacion> findByCreadorNombreContainingIgnoreCase(String nombre);
   List<Publicacion> findByTextoContainingIgnoreCase(String palabra);
 }

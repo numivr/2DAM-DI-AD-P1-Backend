@@ -315,6 +315,14 @@ public class PublicacionService {
     @Transactional
     public List<PublicacionDTO> buscarPorTexto(String palabra) {
         List<Publicacion> publicaciones = publicacionRepository.findByTextoContainingIgnoreCase(palabra);
+
+        if (palabra.startsWith("@")) {
+            String username = palabra.substring(1);
+            publicaciones = publicacionRepository.findByCreadorNombreContainingIgnoreCase(username);
+        } else {
+            publicaciones = publicacionRepository.findByTextoContainingIgnoreCase(palabra);
+        }
+
         return publicaciones.stream().map(pub -> new PublicacionDTO(
                 pub.getId(),
                 pub.getCreador().getId(),
