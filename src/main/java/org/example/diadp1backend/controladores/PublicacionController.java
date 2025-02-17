@@ -72,7 +72,10 @@ public class PublicacionController {
     }
   }
 
-
+  @GetMapping("/buscar")
+  public List<PublicacionDTO> buscarPublicaciones(@RequestParam String palabra) {
+    return publicacionService.buscarPorTexto(palabra);
+  }
 
 
 }
