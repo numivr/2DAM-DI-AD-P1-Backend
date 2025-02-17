@@ -4,6 +4,7 @@ package org.example.diadp1backend.servicios;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.example.diadp1backend.DTOs.RegistroDTO;
 import org.example.diadp1backend.DTOs.UsuarioDTO;
 import org.example.diadp1backend.Security.JWTService;
@@ -282,5 +283,52 @@ public class UsuarioService implements UserDetailsService {
     }
     return false; // ❌ Ya estaba verificado
   }
+
+  /**
+   * 🔹 Método para restablecer la contraseña de un usuario.
+   */
+  @Transactional
+  public boolean resetearContraseña(String nombreUsuario) {
+    Usuario usuario = usuarioRepository.findTopByNombre(nombreUsuario)
+      .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado"));
+
+    // 🔑 Generar una contraseña aleatoria de 10 dígitos numéricos
+    String nuevaContraseña = RandomStringUtils.randomNumeric(10);
+
+    // 🔐 Codificar la nueva contraseña antes de guardarla
+    usuario.setContraseña(passwordEncoder.encode(nuevaContraseña));
+
+    usuarioRepository.save(usuario); // Guardar los cambios
+
+    // 📩 Enviar la nueva contraseña por correo
+    return enviarEmailNuevaContraseña(usuario, nuevaContraseña);
+  }
+
+  /**
+   * 📩 Método para enviar la nueva contraseña al correo del usuario.
+   */
+  private boolean enviarEmailNuevaContraseña(Usuario usuario, String nuevaContraseña) {
+    try {
+      String subject = "🔑 Restablecimiento de Contraseña - Santuario";
+      String message = "Hola " + usuario.getNombre() + ",\n\n" +
+        "Tu contraseña ha sido restablecida. Aquí está tu nueva contraseña temporal:\n\n" +
+        "🔑 " + nuevaContraseña + "\n\n" +
+        "Por favor, inicia sesión con esta contraseña y cámbiala lo antes posible.\n\n" +
+        "Si no solicitaste este cambio, ignora este mensaje.";
+
+      SimpleMailMessage email = new SimpleMailMessage();
+      email.setTo(usuario.getEmail());
+      email.setSubject(subject);
+      email.setText(message);
+      mailSender.send(email);
+
+      return true; // ✅ Enviado correctamente
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false; // ❌ Error al enviar el email
+    }
+  }
+
+
 
 }

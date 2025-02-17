@@ -76,4 +76,24 @@ public class AuthController {
     }
   }
 
+  /**
+   * 🔹 Endpoint para resetear la contraseña de un usuario
+   */
+  @PostMapping("/resetearContraseña")
+  public ResponseEntity<String> resetearContraseña(@RequestBody Map<String, String> payload) {
+    if (!payload.containsKey("usuario")) {
+      return ResponseEntity.badRequest().body("❌ Error: Usuario no proporcionado.");
+    }
+    String usuario = payload.get("usuario");
+
+    boolean restablecido = usuarioService.resetearContraseña(usuario);
+    if (restablecido) {
+      return ResponseEntity.ok("✅ Nueva contraseña enviada por correo.");
+    } else {
+      return ResponseEntity.badRequest().body("❌ Error al restablecer la contraseña.");
+    }
+  }
+
+
+
 }
