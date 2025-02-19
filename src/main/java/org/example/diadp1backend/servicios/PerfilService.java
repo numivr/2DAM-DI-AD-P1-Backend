@@ -166,16 +166,5 @@ public class PerfilService {
     return jwtService.extractTokenData(token).getUsername();
   }
 
-  public String obtenerNombreUsuarioLoggeado() {
-    // Obtener la solicitud HTTP actual
-    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-    String authHeader = request.getHeader("Authorization");
 
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      throw new RuntimeException("Token JWT no presente o mal formado");
-    }
-
-    String token = authHeader.substring(7);
-    return jwtService.extractTokenData(token).getUsername();
-  }
 }

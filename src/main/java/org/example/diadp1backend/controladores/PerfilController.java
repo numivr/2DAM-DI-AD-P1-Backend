@@ -32,11 +32,7 @@ public class PerfilController {
   public PerfilDTO obtenerPerfilPorNombre(@PathVariable String nombrePerfil) {
     return perfilService.obtenerPerfilPorNombre(nombrePerfil);
   }
-
-  @GetMapping("/perfilNombre")
-    public String obtenerPerfilPorNombre() {
-        return perfilService.obtenerNombreUsuarioLoggeado();
-    }
+  
   @GetMapping("/perfilNombre")
     public String obtenerPerfilPorNombre() {
         return perfilService.obtenerNombreUsuarioLoggeado();
