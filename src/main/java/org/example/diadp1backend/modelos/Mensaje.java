@@ -30,7 +30,7 @@ public class Mensaje {
   private Usuario emisor;
 
   @Column(name = "contenido", nullable = false)
-  private String contenido;
+  private String contenido = "";
 
   @Column(name = "fecha", nullable = false)
   private java.sql.Timestamp fecha;

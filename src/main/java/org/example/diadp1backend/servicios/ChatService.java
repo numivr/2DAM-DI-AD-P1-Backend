@@ -72,20 +72,28 @@ public class ChatService {
 
             Mensaje ultimoMensaje = chatRepository.getUltimoMensaje(c.getId());
 
-            if (c.getNombre() == null) {
-                dto.setNombre(chatRepository.findNombreUsuarioByChatId(c.getId(), userId));
-                dto.setUltimoMensaje(ultimoMensaje.getContenido());
 
+            if (Objects.equals(c.getTipo(), "privado")){
+                dto.setNombre(chatRepository.findNombreUsuarioByChatId(c.getId(), userId));
+                if (ultimoMensaje != null && ultimoMensaje.getEmisor().getId().equals(userId)) {
+                    dto.setUltimoMensaje("Tú: " + (ultimoMensaje.getContenido() != null ? ultimoMensaje.getContenido() : ""));
+                } else {
+                    dto.setUltimoMensaje(ultimoMensaje != null && ultimoMensaje.getContenido() != null ? ultimoMensaje.getContenido() : "");
+                }
             } else {
                 dto.setNombre(c.getNombre());
-                if(ultimoMensaje ==null){
-                    dto.setUltimoMensaje("");
+                if (ultimoMensaje != null && ultimoMensaje.getEmisor().getId().equals(userId)) {
+                    dto.setUltimoMensaje("Tú: " + (ultimoMensaje.getContenido() != null ? ultimoMensaje.getContenido() : ""));
                 } else {
                 dto.setUltimoMensaje(ultimoMensaje.getEmisor().getNombre() + ": " + ultimoMensaje.getContenido());
-                dto.setFechaUltimoMensaje(TimestampFormatter.formatTimestamp(ultimoMensaje.getFecha()));
-
                 }
             }
+            if (ultimoMensaje != null) {
+                dto.setFechaUltimoMensaje(TimestampFormatter.formatTimestamp(ultimoMensaje.getFecha()));
+            } else {
+                dto.setFechaUltimoMensaje("");
+            }
+
             fotos = new ArrayList<>(chatRepository.findFotoByUsuarioId(c.getId(), userId));
             dto.setFoto(fotos);
             dto.setTipo(c.getTipo());
@@ -107,8 +115,8 @@ public class ChatService {
 
         // Verificar que los usuarios existen y obtener sus IDs
         List<Integer> miembrosIds = crearChatDTO.getMiembros().stream()
-                .map(miembroId -> usuarioRepository.findById(miembroId)
-                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + miembroId)))
+                .map(nombre -> usuarioRepository.findTopByNombre(nombre)
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + nombre)))
                 .map(Usuario::getId)
                 .collect(Collectors.toList());
 
@@ -135,7 +143,7 @@ public class ChatService {
         for (Integer miembroId : miembrosIds) {
             chatRepository.saveMiembroChat(chat.getId(), miembroId);
         }
-        chatRepository.saveMiembroChat(chat.getId(), userId);
+        chatRepository.saveMiembroChat(chat.getId(), usuarioRepository.findUsuarioIdByNombre(usuarioActual.getNombre()));
 
         return crearChatDTO;
     }
