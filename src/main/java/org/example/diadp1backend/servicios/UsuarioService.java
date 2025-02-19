@@ -240,7 +240,7 @@ public class UsuarioService implements UserDetailsService {
   public boolean enviarEmailVerificacion(Usuario usuario) {
     try {
       String subject = "Activa tu cuenta en Santuario";
-      String verificationUrl = "http://localhost:4200/auth/verificarCuenta?usuario=" + usuario.getNombre();
+      String verificationUrl = "https://twodam-di-ad-p1-backend-2.onrender.com/auth/verificarCuenta?usuario=" + usuario.getNombre();
       String message = "Hola " + usuario.getNombre() + ",\n\nPor favor, haz clic en el siguiente enlace para activar tu cuenta:\n"
         + verificationUrl + "\n\nSi no creaste esta cuenta, ignora este mensaje.";
 
