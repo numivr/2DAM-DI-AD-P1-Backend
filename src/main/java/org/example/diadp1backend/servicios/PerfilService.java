@@ -153,8 +153,6 @@ public class PerfilService {
     );
   }
 
-
-
   public String obtenerNombreUsuarioLoggeado() {
     // Obtener la solicitud HTTP actual
     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();

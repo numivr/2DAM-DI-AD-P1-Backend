@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
+
 @Entity
 @Table(name = "usuarios", schema = "bbdd_santuario")
 @Getter
