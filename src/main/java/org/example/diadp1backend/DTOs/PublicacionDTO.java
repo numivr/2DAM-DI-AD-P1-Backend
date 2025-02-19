@@ -1,12 +1,30 @@
 package org.example.diadp1backend.DTOs;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PublicacionDTO {
-  private Integer idPublicacion; //Esto se usará para listar los comentarios
-  private String usuarioCreador; //Esto solo se usa en el get de publicacion
+  private Integer id;
+  private Integer idCreador; // ✅ Nuevo campo para almacenar el ID del creador
+  private String perfil;
+  private String fotoPerfil;
   private String texto;
-  private String imagen;
-  private Integer idCreador; //Esto solo se usa en el post de publicacion
-  private Integer numLikes; //Esto se usara para saber cuantos likes tiene una publicacion directamente al traernos sus datos
+  private String fotoPublicacion;
+  private int numComentarios;
+  private int numLikes;
+  private boolean liked;
+  private ArrayList<ComentarioDTO> comentarios;
+
+  public PublicacionDTO(Integer id, Integer idCreador, String texto, String imagen) {
+    this.id = id;
+    this.idCreador = idCreador;
+    this.texto = texto;
+    this.fotoPublicacion = imagen;
+  }
 }

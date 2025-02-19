@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -34,5 +35,11 @@ public class Comentario {
 
   @Column(name = "fecha_creacion", nullable = false)
   private java.sql.Timestamp fecha;
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id); // ⚠️ Solo usa el ID, NO la colección de comentarios
+  }
+
 
 }

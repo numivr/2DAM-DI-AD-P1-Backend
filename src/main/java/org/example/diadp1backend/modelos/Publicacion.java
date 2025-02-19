@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -31,7 +32,7 @@ public class Publicacion {
   @JoinColumn(name = "id_creador", nullable = false)
   private Usuario creador;
 
-  @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   private Set<Comentario> comentarios = new HashSet<>();
 
   @ManyToMany
@@ -42,5 +43,11 @@ public class Publicacion {
     inverseJoinColumns = @JoinColumn(name = "id_usuario")
   )
   private Set<Usuario> likes = new HashSet<>();
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id); // ⚠️ Solo usa el ID, NO la colección de comentarios
+  }
+
 
 }

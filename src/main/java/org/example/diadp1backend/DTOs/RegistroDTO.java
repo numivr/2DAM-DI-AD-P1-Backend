@@ -1,13 +1,20 @@
 package org.example.diadp1backend.DTOs;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
-public class CualidadDTO {
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class RegistroDTO {
 
-  // Solo se usa al mostrar el perfil de cada usuario y al hacer el registro de un usuario
+  private String usuario;
+  private String password;
+  private String email;
 
-  private Integer idUsuario;
+  // 📌 Cualidades agregadas al DTO
   private String foto;
   private String genero;
   private String edad;
@@ -19,4 +26,6 @@ public class CualidadDTO {
   private Integer nivelDominancia;
   private Integer tendenciaJuego;
   private Integer temperamento;
+  private Integer experiencia;
+  private Integer territorialidad;
 }
