@@ -13,5 +13,5 @@ import java.util.List;
 public class CrearChatDTO {
     private String nombre;
     private String tipo;
-    private List<Integer> miembros;
+    private List<String> miembros;
 }
