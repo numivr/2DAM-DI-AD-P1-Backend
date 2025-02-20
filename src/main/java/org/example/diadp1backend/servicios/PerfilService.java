@@ -165,6 +165,4 @@ public class PerfilService {
     String token = authHeader.substring(7);
     return jwtService.extractTokenData(token).getUsername();
   }
-
-
 }
