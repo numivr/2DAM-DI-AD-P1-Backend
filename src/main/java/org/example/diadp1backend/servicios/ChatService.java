@@ -85,7 +85,8 @@ public class ChatService {
                 if (ultimoMensaje != null && ultimoMensaje.getEmisor().getId().equals(userId)) {
                     dto.setUltimoMensaje("Tú: " + (ultimoMensaje.getContenido() != null ? ultimoMensaje.getContenido() : ""));
                 } else {
-                dto.setUltimoMensaje(ultimoMensaje.getEmisor().getNombre() + ": " + ultimoMensaje.getContenido());
+                  assert ultimoMensaje != null;
+                  dto.setUltimoMensaje(ultimoMensaje.getEmisor().getNombre() + ": " + ultimoMensaje.getContenido());
                 }
             }
             if (ultimoMensaje != null) {
