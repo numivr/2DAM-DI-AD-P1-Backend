@@ -8,8 +8,8 @@ import lombok.Data;
 public class MensajeDTO {
   private Integer id;
   private Integer idChat;
-  private Integer idEmisor;
   private String nombreEmisor;
   private String contenido;
   private java.sql.Timestamp fecha;
+  private String fotoEmisor;
 }
