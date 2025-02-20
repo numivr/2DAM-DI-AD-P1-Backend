@@ -13,6 +13,11 @@ public interface MensajeRepository extends JpaRepository<Mensaje, Integer> {
     @Query(value = "SELECT m FROM Mensaje m WHERE m.chat.id = :idChat ORDER BY m.fecha asc")
     List<Mensaje> findMensajesByChatId(Integer idChat);
 
+    @Query(value = "SELECT c.foto FROM bbdd_santuario.cualidades c " +
+            "JOIN bbdd_santuario.usuarios u ON c.id_usuario = u.id " +
+            "WHERE u.nombre = :nombreUsuario", nativeQuery = true)
+    String getFotoUsuarioByNombreUsuario(String nombreUsuario);
+
 
 
 }
