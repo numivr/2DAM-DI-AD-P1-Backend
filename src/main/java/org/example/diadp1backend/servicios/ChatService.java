@@ -95,7 +95,7 @@ public class ChatService {
                 dto.setFechaUltimoMensaje("");
             }
 
-            fotos = new ArrayList<>(chatRepository.findFotoByUsuarioId(c.getId(), userId));
+            fotos = new ArrayList<>(chatRepository.findFotosByUsuarioActualId(c.getId(), userId));
             dto.setFoto(fotos);
             dto.setTipo(c.getTipo());
             listaDTOs.add(dto);
@@ -179,7 +179,7 @@ public class ChatService {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new RuntimeException("Chat no encontrado"));
         return chat.getMiembros().stream()
-                .map(usuario -> new ListarUsuarioDTO(usuario.getId(), usuario.getNombre(), chatRepository.findFotoByUsuarioId(chatId, usuario.getId()).get(0)))
+                .map(usuario -> new ListarUsuarioDTO(usuario.getId(), usuario.getNombre(), chatRepository.findFotosByUsuarioActualId(chatId, usuario.getId()).get(0)))
                 .collect(Collectors.toList());
     }
 
@@ -206,7 +206,7 @@ public class ChatService {
         List<Usuario> amigos = usuarioRepository.findAmigosById(userId);
 
         return amigos.stream()
-                .map(usuario -> new ListarUsuarioDTO(usuario.getId(), usuario.getNombre(), chatRepository.findFotoByUsuarioId(1, usuario.getId()).get(0)))
+                .map(usuario -> new ListarUsuarioDTO(usuario.getId(), usuario.getNombre(), chatRepository.findFotoByIdUsuario(usuario.getId())))
                 .collect(Collectors.toList());
     }
 }

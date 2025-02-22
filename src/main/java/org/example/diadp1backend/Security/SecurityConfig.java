@@ -35,7 +35,7 @@ public class SecurityConfig {
       .csrf(AbstractHttpConfigurer::disable)
       .cors(cors -> cors.configurationSource(request -> {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("https://twodam-di-ad-p1-frontend.onrender.com/",
+        config.setAllowedOriginPatterns(List.of("https://twodam-di-ad-p1-frontend-wmp0.onrender.com/",
           "https://localhost",
           "http://localhost:4200"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

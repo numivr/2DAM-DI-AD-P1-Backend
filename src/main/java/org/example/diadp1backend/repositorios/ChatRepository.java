@@ -1,18 +1,14 @@
 package org.example.diadp1backend.repositorios;
 
-import org.example.diadp1backend.DTOs.ChatWithProfilesDTO;
 import org.example.diadp1backend.modelos.Chat;
 import org.example.diadp1backend.modelos.Mensaje;
-import org.example.diadp1backend.modelos.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
@@ -24,7 +20,10 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
     String findNombreUsuarioByChatId(Integer idChat, Integer idUsuario);
 
     @Query(value = "SELECT c.foto FROM bbdd_santuario.Cualidades c join bbdd_santuario.usuarios u on (c.id_usuario = u.id) join bbdd_santuario.miembros_chat m on (u.id = m.id_usuario) WHERE m.id_chat = :idChat and u.id != :idUsuario limit 5", nativeQuery = true)
-    List<String> findFotoByUsuarioId(Integer idChat, Integer idUsuario);
+    List<String> findFotosByUsuarioActualId(Integer idChat, Integer idUsuario);
+
+    @Query(value = "SELECT c.foto FROM bbdd_santuario.Cualidades c join bbdd_santuario.usuarios u on (c.id_usuario = u.id) join bbdd_santuario.miembros_chat m on (u.id = m.id_usuario) WHERE u.id = :idUsuario limit 1", nativeQuery = true)
+    String findFotoByIdUsuario(Integer idUsuario);
 
 
     @Query(value = "select m from Mensaje m " +
