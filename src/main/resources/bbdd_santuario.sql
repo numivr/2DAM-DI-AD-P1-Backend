@@ -1,3 +1,5 @@
+-- Active: 1740248261053@@dpg-cut0ujdsvqrc73e2vodg-a.frankfurt-postgres.render.com@5432@bbdd_santuario_ll1a
+
 -- Eliminar el esquema si existe
 DROP SCHEMA IF EXISTS bbdd_santuario CASCADE;
 
