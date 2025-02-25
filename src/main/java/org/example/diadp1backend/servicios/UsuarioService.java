@@ -261,6 +261,8 @@ public class UsuarioService implements UserDetailsService {
     Usuario usuarioVerificar = usuarioRepository.findTopByNombre(usuario)
       .orElseThrow(() -> new RuntimeException("❌ Usuario no encontrado"));
 
+    usuarioVerificar.setVerificado(true);
+
     try {
       enviarEmailVerificacion(usuarioVerificar);
       return true; // ✅ Retorna true si el email se envía correctamente
