@@ -18,8 +18,6 @@ RUN ./mvnw dependency:resolve dependency:go-offline
 # Copia el código fuente
 COPY src/ src/
 
-# Compila la aplicación
-RUN ./mvnw clean package -DskipTests
 
 # Verifica que el JAR se haya generado
 RUN ls -l target/
